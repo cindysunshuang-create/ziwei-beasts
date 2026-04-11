@@ -201,7 +201,7 @@ function RulesPage({ onNext, onBack }: { onNext: () => void; onBack?: () => void
 }
 
 // Input
-function InputPage({ onSubmit, onBack }: { onSubmit: (d: { name: string; year: number; month: number; day: number; hour: number; gender: 'male' | 'female' }) => void }) {
+function InputPage({ onSubmit, onBack }: { onSubmit: (d: { name: string; year: number; month: number; day: number; hour: number; gender: 'male' | 'female' }) => void; onBack?: () => void }) {
   const [form, setForm] = useState({ name: '', year: '2000', month: '1', day: '1', hour: '12', gender: 'male' as 'male' | 'female' })
   const [errs, setErrs] = useState<Record<string, string>>({})
   const [v, setV] = useState(false)
@@ -305,7 +305,7 @@ function CalculatingPage({ name, onCancel }: { name: string; onCancel?: () => vo
 }
 
 // Profile Reveal
-function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: ZiweiChart; onDiscover: () => void; onClose?: () => void }) {
+function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: ZiweiChart; onDiscover: () => void; onClose?: () => void; onBack?: () => void }) {
   const beast = BEASTS[chart.guardianBeastId - 1]
   const [v, setV] = useState(false)
   useEffect(() => { const t = setTimeout(() => setV(true), 100); return () => clearTimeout(t) }, [])
