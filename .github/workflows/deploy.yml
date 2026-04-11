@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,12 +36,21 @@ jobs:
           VITE_DEPLOY_ENV: github
 
       - name: Add CNAME
-        run: echo "easternmystical.com" > dist/CNAME
+        run: echo "www.easternmystical.com" >> dist/CNAME
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          cname: easternmystical.com
-          enable_jekyll: false
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: needs.build.result == 'success'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
