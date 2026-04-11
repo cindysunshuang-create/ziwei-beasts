@@ -30,12 +30,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Show node version
+        run: node --version && npm --version
+
       - name: Build
-        run: npm run build
+        run: npm run build 2>&1
         env:
           VITE_DEPLOY_ENV: github
 
+      - name: Show dist contents
+        run: ls -la dist/ 2>&1 || echo "dist folder missing!"
+
       - name: Upload Pages artifact
+        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -43,6 +50,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    if: needs.build.result == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
