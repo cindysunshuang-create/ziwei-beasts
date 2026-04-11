@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,31 +30,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Show node version
-        run: node --version && npm --version
-
       - name: Build
-        run: npm run build 2>&1
+        run: npm run build
         env:
           VITE_DEPLOY_ENV: github
 
-      - name: Show dist contents
-        run: ls -la dist/ 2>&1 || echo "dist folder missing!"
+      - name: Add CNAME
+        run: echo "easternmystical.com" > dist/CNAME
 
-      - name: Upload Pages artifact
-        if: success()
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: needs.build.result == 'success'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          cname: easternmystical.com
+          enable_jekyll: false
