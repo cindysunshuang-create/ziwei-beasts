@@ -258,7 +258,7 @@ function InputPage({ onSubmit, onBack }: { onSubmit: (d: { name: string; year: n
           </div>
           <div className="form-group">
             <label className="form-label">Birth Hour (0-23)</label>
-            <input type="number" className="form-input" placeholder="12 = noon · 0 = midnight" value={form.hour} min={0} max={23} onChange={e => setForm({ ...form, hour: parseInt(e.target.value) || 0 })} />
+            <input type="number" className="form-input" placeholder="12 = noon · 0 = midnight" defaultValue={form.hour} min="0" max="23" onChange={e => setForm({ ...form, hour: (parseInt(e.target.value) || 0) as unknown as string })} />
             <div className="form-hint">Zi(23-01) · Chou(01-03) · Yin(03-05) · Mao(05-07) · Chen(07-09) · Si(09-11) · Wu(11-13) · Wei(13-15) · Shen(15-17) · You(17-19) · Xu(19-21) · Hai(21-23)</div>
           </div>
           <button type="submit" className="btn btn-primary btn-full">Calculate My Chart →</button>
@@ -443,7 +443,7 @@ function PaymentModal({ beast, onClose, onSuccess }: { beast: typeof BEASTS[numb
             </div>
           ))}
         </div>
-        <div class="pay-price">$9.99 <span>one-time payment</span></div>
+        <div className="pay-price">$9.99 <span>one-time payment</span></div>
         <button className="btn btn-primary btn-full" onClick={handlePay} disabled={processing}>
           {processing ? <span className="dots"><span>.</span><span>.</span><span>.</span></span> : 'Complete Purchase — $9.99'}
         </button>
@@ -505,7 +505,7 @@ function RevealAnimation({ beast, onDone }: { beast: typeof BEASTS[number]; onDo
 }
 
 // Guardian Reveal Page
-function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiChart; onBind: () => void; onClose?: () => void }) {
+function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiChart; onBind: () => void; onClose?: () => void; onBack?: () => void }) {
   const beast = BEASTS[chart.guardianBeastId - 1]
   const [tab, setTab] = useState<'myth' | 'personality' | 'chart'>('myth')
   const [v, setV] = useState(false)
@@ -683,7 +683,7 @@ export default function App() {
   const [formData, setFormData] = useState<{ name: string; year: number; month: number; day: number; hour: number; gender: 'male' | 'female' } | null>(null)
   const [chart, setChart] = useState<ZiweiChart | null>(null)
   const [modal, setModal] = useState<ModalStep>(null)
-  const [paid, setPaid] = useState(false)
+  const [, setPaid] = useState(false)  // paid tracked for future use
 
   const handleFormSubmit = (data: typeof formData) => {
     setFormData(data)
