@@ -27,7 +27,7 @@ jobs:
           BASE_URL: /
 
       - name: Deploy to DigitalOcean
-        uses: easingthemes/ssh-deploy@v5
+        uses: easingthemes/ssh-deploy@v4
         with:
           HOST: ${{ secrets.DO_HOST }}
           USERNAME: root
