@@ -924,11 +924,12 @@ export default function App() {
         <BindPage chart={chart} onComplete={resetAll} onClose={resetAll} />
       )}
           {authModal && (
-        <AuthModal
+      {authModal && (
           onClose={() => setAuthModal(false)}
           onLoginSuccess={(u) => { console.log('Signed in:', u?.email); setAuthModal(false) }}
         />
       )}
 
+    </div>
   )
 }
