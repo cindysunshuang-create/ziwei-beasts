@@ -66,7 +66,7 @@ function Nav({ onHome, stepBack }: { onHome?: () => void; stepBack?: () => void 
 }
 
 // Hero
-function HeroPage({ onBegin }: { onBegin: () => void }) {
+function HeroPage({ onBegin, onSignIn, user, onSignOut }: { onBegin: () => void; onSignIn: () => void; user: any | null; onSignOut: () => void }) {
   const [phase, setPhase] = useState(0)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
