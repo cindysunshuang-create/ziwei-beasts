@@ -923,8 +923,8 @@ export default function App() {
       {journey === 'bind' && chart && (
         <BindPage chart={chart} onComplete={resetAll} onClose={resetAll} />
       )}
-          {authModal && (
       {authModal && (
+        <AuthModal
           onClose={() => setAuthModal(false)}
           onLoginSuccess={(u) => { console.log('Signed in:', u?.email); setAuthModal(false) }}
         />
