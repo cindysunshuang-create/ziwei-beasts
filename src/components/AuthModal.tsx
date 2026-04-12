@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { signInWithGoogle, signUpWithEmail, logInWithEmail, logOut } from '../lib/firebase'
-import { User } from 'firebase/auth'
+import type { User } from 'firebase/auth'
 import './AuthModal.css'
 
 interface AuthModalProps {
@@ -89,7 +89,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
               required
             />
             <button className="auth-btn auth-btn-primary" type="submit" disabled={loading}>
-              {loading ? 'Signing in...' : mode === 'signup' ? 'Create Account' : 'Sign In'}
+              {loading ? 'Signing in...' : (mode === 'signup' ? 'Create Account' : 'Sign In')}
             </button>
           </form>
         )}
