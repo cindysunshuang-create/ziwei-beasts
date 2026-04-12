@@ -26,14 +26,14 @@ jobs:
           VITE_APP_TITLE: "紫微斗数"
           BASE_URL: /
 
-      - name: Deploy to DigitalOcean
-        uses: easingthemes/ssh-deploy@v4
-        with:
-          HOST: ${{ secrets.DO_HOST }}
-          USERNAME: root
-          PORT: ${{ secrets.DO_PORT }}
-          KEY: ${{ secrets.DO_DEPLOY_KEY }}
-          SOURCE: "dist/"
-          TARGET: "/var/www/html"
-          ARGS: "-avz --delete"
-          EXCLUDE: ""
+      - name: Deploy to DigitalOcean via rsync
+        env:
+          DEPLOY_KEY: ${{ secrets.DO_DEPLOY_KEY }}
+          DO_HOST: ${{ secrets.DO_HOST }}
+          DO_PORT: ${{ secrets.DO_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${DO_PORT:-22}" -H "$DO_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          rsync -avz --delete -e "ssh -p ${DO_PORT:-22} -o StrictHostKeyChecking=no" dist/ root@"$DO_HOST":/var/www/html/
