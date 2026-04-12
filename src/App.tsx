@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
+import { AuthModal } from './components/AuthModal'
+import { useAuth } from './contexts/AuthContext'
 import { calculateZiweiChart } from './engine/ziweiCalculator'
 import type { ZiweiChart } from './engine/ziweiCalculator'
 
@@ -870,6 +872,8 @@ export default function App() {
   const [formData, setFormData] = useState<{ name: string; year: number; month: number; day: number; hour: number; gender: 'male' | 'female' } | null>(null)
   const [chart, setChart] = useState<ZiweiChart | null>(null)
   const [modal, setModal] = useState<ModalStep>(null)
+  const { user } = useAuth()
+  const [authModal, setAuthModal] = useState(false)
   const [, setPaid] = useState(false)  // paid tracked for future use
 
   const handleFormSubmit = (data: typeof formData) => {
@@ -912,6 +916,12 @@ export default function App() {
       {journey === 'bind' && chart && (
         <BindPage chart={chart} onComplete={resetAll} onClose={resetAll} />
       )}
-    </div>
+          {authModal && (
+        <AuthModal
+          onClose={() => setAuthModal(false)}
+          onLoginSuccess={(u) => { console.log('Signed in:', u?.email); setAuthModal(false) }}
+        />
+      )}
+
   )
 }
