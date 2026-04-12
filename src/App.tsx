@@ -269,6 +269,143 @@ function InputPage({ onSubmit, onBack }: { onSubmit: (d: { name: string; year: n
   )
 }
 
+// ── Luopan Compass (SVG) ──────────────────────────────────────────────────────
+const BRANCHES = ['Zi','Chou','Yin','Mao','Chen','Si','Wu','Wei','Shen','You','Xu','Hai']
+const BRANCH_COLORS = ['#EF4444','#F97316','#EAB308','#22C55E','#14B8A6','#06B6D4','#3B82F6','#6366F1','#8B5CF6','#A855F7','#D946EF','#EC4899']
+
+function LuopanCompass({ step }: { step: number }) {
+  const outerRing = 110, midRing = 82, innerRing = 54, coreRing = 28
+  const S = 240, cx = S/2, cy = S/2
+
+  // step: 0-4 → 0°..72° slow drift each step
+  const driftDeg = step * 0.8
+  const needleActive = step >= 2
+
+  const polarPoints = (r: number, offset = 0) =>
+    BRANCHES.map((_, i) => {
+      const a = (i / 12) * Math.PI * 2 - Math.PI/2 + (driftDeg * Math.PI) / 180
+      return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) }
+    })
+
+  const ringPoints = (r: number) =>
+    BRANCHES.map((_, i) => {
+      const a = (i / 12) * Math.PI * 2 - Math.PI/2 + (driftDeg * Math.PI) / 180
+      return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) }
+    })
+
+  const outerPts = polarPoints(outerRing)
+  const midPts   = polarPoints(midRing)
+  const innerPts = polarPoints(innerRing)
+
+  // Needle: always points to current step position (weighted toward Ming Palace ≈ step 3)
+  const needleAngle = ((3.5 + step * 0.4) / 12) * Math.PI * 2 - Math.PI/2
+  const needleLen = innerRing - 4
+  const nx1 = cx + needleLen * Math.cos(needleAngle)
+  const ny1 = cy + needleLen * Math.sin(needleAngle)
+  const nx2 = cx - needleLen * 0.3 * Math.cos(needleAngle)
+  const ny2 = cy - needleLen * 0.3 * Math.sin(needleAngle)
+
+  return (
+    <svg width="260" height="260" viewBox={`0 0 ${S} ${S}`} style={{ filter: 'drop-shadow(0 0 18px rgba(201,148,58,0.35))' }}>
+      {/* Outer glow ring */}
+      <circle cx={cx} cy={cy} r={outerRing + 8} fill="none" stroke="rgba(201,148,58,0.08)" strokeWidth="14"/>
+
+      {/* 12 branch outer boundary */}
+      {outerPts.map((pt, i) => (
+        <g key={i}>
+          {/* tick marks */}
+          <line x1={pt.x} y1={pt.y}
+            x2={cx + (outerRing + (i % 3 === 0 ? 10 : 5)) * Math.cos((i/12)*Math.PI*2 - Math.PI/2 + (driftDeg*Math.PI)/180)}
+            y2={cy + (outerRing + (i % 3 === 0 ? 10 : 5)) * Math.sin((i/12)*Math.PI*2 - Math.PI/2 + (driftDeg*Math.PI)/180)}
+            stroke={BRANCH_COLORS[i]} strokeWidth={i % 3 === 0 ? 1.5 : 0.7} opacity={i % 3 === 0 ? 0.9 : 0.4}
+          />
+          {/* branch label — major ticks */}
+          {i % 3 === 0 && (() => {
+            const a = (i / 12) * Math.PI * 2 - Math.PI/2 + (driftDeg * Math.PI) / 180
+            const lx = cx + (outerRing + 22) * Math.cos(a)
+            const ly = cy + (outerRing + 22) * Math.sin(a)
+            return (
+              <text key={i} x={lx} y={ly} textAnchor="middle" dominantBaseline="central"
+                fill={BRANCH_COLORS[i]} fontSize="9" fontFamily="serif" fontWeight="bold" opacity="0.85">
+                {BRANCHES[i]}
+              </text>
+            )
+          })()}
+        </g>
+      ))}
+
+      {/* Outer ring fill */}
+      <polygon points={outerPts.map(p => `${p.x},${p.y}`).join(' ')} fill="rgba(20,10,5,0.75)" stroke="rgba(201,148,58,0.35)" strokeWidth="0.8"/>
+
+      {/* Mid ring — 8 fortune palaces / hex */}
+      {Array.from({length: 8}, (_, i) => {
+        const a1 = (i / 8) * Math.PI * 2 - Math.PI/2
+        const a2 = ((i + 1) / 8) * Math.PI * 2 - Math.PI/2
+        const mx1 = cx + midRing * Math.cos(a1), my1 = cy + midRing * Math.sin(a1)
+        const mx2 = cx + midRing * Math.cos(a2), my2 = cy + midRing * Math.sin(a2)
+        const mxm = cx + (midRing * 0.7) * Math.cos((a1+a2)/2)
+        const mym = cy + (midRing * 0.7) * Math.sin((a1+a2)/2)
+        const op = outerPts[i * Math.floor(12/8)]
+        const on = outerPts[((i+1) * Math.floor(12/8)) % 12]
+        return <g key={i}>
+          <path d={`M ${op.x},${op.y} L ${mx1},${my1} A ${midRing} ${midRing} 0 0 1 ${mx2},${my2} Z`}
+            fill="rgba(40,20,8,0.5)" stroke="rgba(201,148,58,0.2)" strokeWidth="0.5"/>
+          <text x={mxm} y={mym} textAnchor="middle" dominantBaseline="central"
+            fill="rgba(201,148,58,0.5)" fontSize="6.5" fontFamily="serif">{(['M','F','P','T','H','R','C','W'])[i]}</text>
+        </g>
+      })}
+
+      {/* Mid ring circle */}
+      <circle cx={cx} cy={cy} r={midRing} fill="none" stroke="rgba(201,148,58,0.35)" strokeWidth="0.8"/>
+
+      {/* Inner ring */}
+      <polygon points={innerPts.map(p => `${p.x},${p.y}`).join(' ')} fill="rgba(30,15,5,0.85)" stroke="rgba(201,148,58,0.25)" strokeWidth="0.6"/>
+      <circle cx={cx} cy={cy} r={innerRing} fill="none" stroke="rgba(201,148,58,0.25)" strokeWidth="0.6"/>
+
+      {/* Core ring */}
+      <circle cx={cx} cy={cy} r={coreRing} fill="rgba(10,5,2,0.9)" stroke="rgba(201,148,58,0.5)" strokeWidth="1"/>
+      <circle cx={cx} cy={cy} r={coreRing - 5} fill="none" stroke="rgba(201,148,58,0.15)" strokeWidth="0.5"/>
+
+      {/* Center dot with glow */}
+      <circle cx={cx} cy={cy} r="5" fill="#C9943A" opacity="0.9"/>
+      <circle cx={cx} cy={cy} r="9" fill="none" stroke="rgba(201,148,58,0.3)" strokeWidth="0.8"/>
+      <circle cx={cx} cy={cy} r="14" fill="none" stroke="rgba(201,148,58,0.12)" strokeWidth="1.2"/>
+
+      {/* Decorative star markers on outer ring (24 xuanji points) */}
+      {Array.from({length: 24}, (_, i) => {
+        const a = (i / 24) * Math.PI * 2 - Math.PI/2 + (driftDeg * Math.PI) / 180
+        const rx = cx + outerRing * Math.cos(a)
+        const ry = cy + outerRing * Math.sin(a)
+        const s = i % 2 === 0 ? 2.2 : 1.4
+        return <circle key={i} cx={rx} cy={ry} r={s} fill="rgba(201,148,58,0.4)"/>
+      })}
+
+      {/* Animated compass needle */}
+      {needleActive && (
+        <g opacity="0.9">
+          <line x1={nx2} y1={ny2} x2={nx1} y2={ny1} stroke="#EF4444" strokeWidth="2.2" strokeLinecap="round"
+            style={{ filter: 'drop-shadow(0 0 4px rgba(239,68,68,0.7))' }}/>
+          <line x1={nx2} y1={ny2} x2={nx1} y2={ny1} stroke="#FCA5A5" strokeWidth="0.8" strokeLinecap="round"/>
+          {/* Needle tip triangle */}
+          <circle cx={nx1} cy={ny1} r="3" fill="#EF4444" opacity="0.8"/>
+          {/* Tail end */}
+          <circle cx={nx2} cy={ny2} r="2" fill="rgba(201,148,58,0.6)"/>
+        </g>
+      )}
+
+      {/* Subtle cardinal markers */}
+      {[0, 90, 180, 270].map(deg => {
+        const a = (deg * Math.PI) / 180
+        return <g key={deg}>
+          <line x1={cx+(outerRing+2)*Math.cos(a)} y1={cy+(outerRing+2)*Math.sin(a)}
+            x2={cx+(outerRing-6)*Math.cos(a)} y2={cy+(outerRing-6)*Math.sin(a)}
+            stroke="rgba(201,148,58,0.6)" strokeWidth="1.2"/>
+        </g>
+      })}
+    </svg>
+  )
+}
+
 // Calculating
 function CalculatingPage({ name, onCancel }: { name: string; onCancel?: () => void }) {
   const [step, setStep] = useState(0)
@@ -285,46 +422,66 @@ function CalculatingPage({ name, onCancel }: { name: string; onCancel?: () => vo
     const t2 = setInterval(() => setProgress(p => Math.min(p + 2, 100)), 200)
     return () => { clearInterval(t1); clearInterval(t2) }
   }, [])
+
   return (
     <div className="page page-center">
       <Stars />
-      <div className="calc-center">
-        <div className="calc-orbit-wrap">
-          {[0,1,2,3].map(i => <div key={i} className="calc-orbit-ring" />)}
-          <div className="calc-core"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#C9943A" strokeWidth="0.8" opacity="0.4"/><circle cx="20" cy="20" r="5" fill="#C9943A" opacity="0.9"/></svg></div>
+      <div className="calc-compass-layout">
+        {/* Left: rotating compass */}
+        <div className="compass-wrap">
+          <div className="compass-outer-ring" />
+          <LuopanCompass step={step} />
+          {step >= 3 && (
+            <div className="compass-needle-glow" />
+          )}
         </div>
-        <div className="calc-progress"><div className="calc-fill" style={{ width: `${progress}%` }}/></div>
-        <div className="calc-pct">{progress}%</div>
-        <div className="calc-msg">{msgs[step]?.m}</div>
-        <div className="calc-sub">{msgs[step]?.s}</div>
-        <div className="calc-for">Casting chart for {name}...</div>
-        {onCancel && <button className="btn btn-ghost btn-full" onClick={onCancel} style={{ marginTop: "1rem" }}>← Cancel & Re-enter</button>}
+
+        {/* Right: text progress */}
+        <div className="calc-text-panel">
+          <div className="compass-title">紫微斗数</div>
+          <div className="compass-subtitle">Ziwei Doushu · Astrology</div>
+          <div className="calc-progress"><div className="calc-fill" style={{ width: `${progress}%` }}/></div>
+          <div className="calc-pct">{progress}%</div>
+          <div className="calc-msg">{msgs[step]?.m}</div>
+          <div className="calc-sub">{msgs[step]?.s}</div>
+          <div className="calc-for">Casting chart for {name}...</div>
+          {onCancel && <button className="btn btn-ghost" onClick={onCancel}>← Cancel</button>}
+        </div>
       </div>
     </div>
   )
 }
 
-// Profile Reveal
+// Profile Reveal (Centered Modal)
 function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: ZiweiChart; onDiscover: () => void; onClose?: () => void; onBack?: () => void }) {
   const beast = BEASTS[chart.guardianBeastId - 1]
   const [v, setV] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setV(true), 100); return () => clearTimeout(t) }, [])
+  useEffect(() => { const t = setTimeout(() => setV(true), 80); return () => clearTimeout(t) }, [])
   return (
-    <div className="page page-center overlay-page" style={{ opacity: v ? 1 : 0, transition: 'opacity 0.7s' }}>
+    <div className="profile-modal-overlay" style={{ opacity: v ? 1 : 0, transition: 'opacity 0.5s' }}>
       <Stars />
-      {onClose && (
-        <button className="close-x" onClick={onClose} aria-label="Close">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2 L14 14 M14 2 L2 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-        </button>
-      )}
-      <div className="content-center">
-        <div className="eyebrow">✦ YOUR FREE PERSONALITY PROFILE ✦</div>
+      <div className="profile-modal-card">
+        {/* Header */}
+        <div className="profile-modal-header">
+          <div className="eyebrow">✦ YOUR FREE PERSONALITY PROFILE ✦</div>
+          {onClose && (
+            <button className="profile-modal-close" onClick={onClose} aria-label="Close">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2 L14 14 M14 2 L2 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            </button>
+          )}
+        </div>
+
+        {/* Type Badge */}
         <div className="profile-type">{chart.personalityType}</div>
         <div className="profile-sub">{chart.personalitySubtype}</div>
+
+        {/* Ming Palace Section */}
         <div className="profile-ming">
           <div className="profile-ming-label">Your Ming Palace — {chart.mingPalace}</div>
           <p className="profile-ming-text">{chart.personalityProfile}</p>
         </div>
+
+        {/* Pillars Grid */}
         <div className="profile-grid">
           {[
             { l: 'Year Stem', v: chart.calculationDetails.yearlyStem },
@@ -340,14 +497,18 @@ function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: Ziwe
             </div>
           ))}
         </div>
-        <div className="beast-teaser">
-          <img src={beast.icon} alt={beast.name} className="beast-teaser-img" />
+
+        {/* Guardian Teaser */}
+        <div className="profile-beast-teaser">
+          <img src={beast.icon} alt={beast.name} className="profile-beast-teaser-img" />
           <div>
-            <div className="beast-teaser-label">Your Guardian Awaits</div>
-            <div className="beast-teaser-name">{beast.name}</div>
-            <div className="beast-teaser-sub" style={{ color: beast.color }}>Unlock to reveal</div>
+            <div className="profile-beast-teaser-label">Your Guardian Awaits</div>
+            <div className="profile-beast-teaser-name">{beast.name}</div>
+            <div className="profile-beast-teaser-sub" style={{ color: beast.color }}>Unlock to reveal</div>
           </div>
         </div>
+
+        {/* Actions */}
         <button className="btn btn-primary btn-full" onClick={onDiscover}>Discover My Guardian Beast →</button>
         {onBack && <button className="btn btn-ghost btn-full" onClick={onBack} style={{ marginTop: "0.75rem" }}>← Calculate Another Chart</button>}
       </div>
