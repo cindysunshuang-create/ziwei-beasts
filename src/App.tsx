@@ -893,6 +893,13 @@ export default function App() {
 
   return (
     <div className="app">
+      <button
+        className="nav-signin-btn"
+        onClick={() => setAuthModal(true)}
+        style={{position:'fixed',top:16,right:20,zIndex:999,background:'rgba(255,255,255,0.15)',border:'1px solid rgba(255,255,255,0.3)',color:'#fff',padding:'7px 16px',borderRadius:20,cursor:'pointer',fontSize:13,backdropFilter:'blur(8px)'}}
+      >
+        {user ? '\u2605 Account' : '\u2606 Sign In'}
+      </button>
       {journey === 'hero' && <HeroPage onBegin={() => setJourney('world-intro')} />}
       {journey === 'world-intro' && <><Nav stepBack={resetAll} /><WorldIntroPage onNext={() => setJourney('rules')} onBack={resetAll} /></>}
       {journey === 'rules' && <><Nav stepBack={() => setJourney('world-intro')} /><RulesPage onNext={() => setJourney('input')} onBack={() => setJourney('world-intro')} /></>}
