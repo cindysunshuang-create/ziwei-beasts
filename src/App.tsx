@@ -910,10 +910,7 @@ export default function App() {
         <ProfileRevealPage chart={chart} onDiscover={() => setModal('silhouette')} onClose={resetAll} onBack={() => setJourney('input')} />
       )}
       {modal === 'silhouette' && (
-        <SilhouetteModal beast={beast} onClose={closeModal} onUnlock={() => setModal('payment')} />
-      )}
-      {modal === 'payment' && (
-        <PaymentModal beast={beast} onClose={closeModal} onSuccess={() => { setModal(null); setPaid(true); setTimeout(() => setModal('revealing'), 50) }} />
+        <SilhouetteModal beast={beast} onClose={closeModal} onUnlock={() => setModal('revealing')} />
       )}
       {modal === 'revealing' && (
         <RevealAnimation beast={beast} onDone={() => setModal('reveal')} />
