@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { signInWithGoogle, signUpWithEmail, logInWithEmail, logOut } from '../lib/firebase'
+import { signInWithGoogle, signUpWithEmail, logInWithEmail } from '../lib/firebase'
 import type { User } from 'firebase/auth'
 import './AuthModal.css'
 
@@ -14,6 +14,8 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const emailBtnLabel = mode === 'signup' ? 'Create Account' : 'Sign In'
 
   const handleGoogle = async () => {
     setError(''); setLoading(true)
@@ -89,7 +91,7 @@ export function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
               required
             />
             <button className="auth-btn auth-btn-primary" type="submit" disabled={loading}>
-              {loading ? 'Signing in...' : (mode === 'signup' ? 'Create Account' : 'Sign In')}
+              {loading ? 'Signing in...' : emailBtnLabel}
             </button>
           </form>
         )}
