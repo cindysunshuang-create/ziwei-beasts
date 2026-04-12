@@ -26,15 +26,14 @@ jobs:
           VITE_APP_TITLE: "紫微斗数"
           BASE_URL: /
 
-      - name: Deploy to DigitalOcean via SFTP
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to DigitalOcean
+        uses: easingthemes/ssh-deploy@v5
         with:
-          host: ${{ secrets.DO_HOST }}
-          port: ${{ secrets.DO_PORT }}
-          username: root
-          key: ${{ secrets.DO_DEPLOY_KEY }}
-          source: "dist/*"
-          target: "/var/www/html/"
-          strip_components: 1
-          overwrite: true
-          quiet: false
+          HOST: ${{ secrets.DO_HOST }}
+          USERNAME: root
+          PORT: ${{ secrets.DO_PORT }}
+          KEY: ${{ secrets.DO_DEPLOY_KEY }}
+          SOURCE: "dist/"
+          TARGET: "/var/www/html"
+          ARGS: "-avz --delete"
+          EXCLUDE: ""
