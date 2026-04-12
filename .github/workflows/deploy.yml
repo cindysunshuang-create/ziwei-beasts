@@ -1,21 +1,11 @@
-name: Deploy to GitHub Pages
+name: Deploy to DigitalOcean
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,24 +23,18 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_DEPLOY_ENV: github
+          VITE_APP_TITLE: "紫微斗数"
+          BASE_URL: /
 
-      - name: Add CNAME
-        run: echo "www.easternmystical.com" >> dist/CNAME
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to DigitalOcean via SFTP
+        uses: appleboy/scp-action@v0.1.7
         with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: needs.build.result == 'success'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          host: ${{ secrets.DO_HOST }}
+          port: ${{ secrets.DO_PORT }}
+          username: root
+          key: ${{ secrets.DO_DEPLOY_KEY }}
+          source: "dist/*"
+          target: "/var/www/html/"
+          strip_components: 1
+          overwrite: true
+          quiet: false
