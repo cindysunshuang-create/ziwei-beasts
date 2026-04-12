@@ -269,139 +269,144 @@ function InputPage({ onSubmit, onBack }: { onSubmit: (d: { name: string; year: n
   )
 }
 
-// ── Luopan Compass (SVG) ──────────────────────────────────────────────────────
-const BRANCHES = ['Zi','Chou','Yin','Mao','Chen','Si','Wu','Wei','Shen','You','Xu','Hai']
-const BRANCH_COLORS = ['#EF4444','#F97316','#EAB308','#22C55E','#14B8A6','#06B6D4','#3B82F6','#6366F1','#8B5CF6','#A855F7','#D946EF','#EC4899']
+// ── Constellation Star Chart (no Chinese) ───────────────────────────────────
+function ConstellationStarChart({ step }: { step: number }) {
+  const S = 260, cx = S/2, cy = S/2
 
-function LuopanCompass({ step }: { step: number }) {
-  const outerRing = 110, midRing = 82, innerRing = 54, coreRing = 28
-  const S = 240, cx = S/2, cy = S/2
+  // Outer ring of small stars — rotates slowly
+  const outerR = 115, midR = 85, innerR = 55
+  const drift = step * 0.9  // degrees per step
 
-  // step: 0-4 → 0°..72° slow drift each step
-  const driftDeg = step * 0.8
-  const needleActive = step >= 2
+  // 36 outer constellation stars
+  const outerStars = Array.from({ length: 36 }, (_, i) => {
+    const a = (i / 36) * Math.PI * 2 - Math.PI/2 + (drift * Math.PI / 180)
+    return { x: cx + outerR * Math.cos(a), y: cy + outerR * Math.sin(a), i }
+  })
 
-  const polarPoints = (r: number, offset = 0) =>
-    BRANCHES.map((_, i) => {
-      const a = (i / 12) * Math.PI * 2 - Math.PI/2 + (driftDeg * Math.PI) / 180
-      return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) }
-    })
+  // 12 mid ring nodes (connected by lines to form constellation)
+  const midNodes = Array.from({ length: 12 }, (_, i) => {
+    const a = (i / 12) * Math.PI * 2 - Math.PI/2 + (drift * 0.5 * Math.PI / 180)
+    return { x: cx + midR * Math.cos(a), y: cy + midR * Math.sin(a), i }
+  })
 
-  const ringPoints = (r: number) =>
-    BRANCHES.map((_, i) => {
-      const a = (i / 12) * Math.PI * 2 - Math.PI/2 + (driftDeg * Math.PI) / 180
-      return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) }
-    })
+  // 8 inner ring stars
+  const innerStars = Array.from({ length: 8 }, (_, i) => {
+    const a = (i / 8) * Math.PI * 2 - Math.PI/2 + (drift * 0.3 * Math.PI / 180)
+    return { x: cx + innerR * Math.cos(a), y: cy + innerR * Math.sin(a) }
+  })
 
-  const outerPts = polarPoints(outerRing)
-  const midPts   = polarPoints(midRing)
-  const innerPts = polarPoints(innerRing)
+  // Connecting lines between mid nodes (constellation pattern)
+  const midLines = midNodes.map((n, i) => {
+    const next = midNodes[(i + 2) % 12]
+    return { x1: n.x, y1: n.y, x2: next.x, y2: next.y }
+  })
 
-  // Needle: always points to current step position (weighted toward Ming Palace ≈ step 3)
-  const needleAngle = ((3.5 + step * 0.4) / 12) * Math.PI * 2 - Math.PI/2
-  const needleLen = innerRing - 4
-  const nx1 = cx + needleLen * Math.cos(needleAngle)
-  const ny1 = cy + needleLen * Math.sin(needleAngle)
-  const nx2 = cx - needleLen * 0.3 * Math.cos(needleAngle)
-  const ny2 = cy - needleLen * 0.3 * Math.sin(needleAngle)
+  // Active meridian line — appears at step >= 2
+  const meridianAngle = ((step * 0.8) * Math.PI) / 180
+  const mLineX2 = cx + 120 * Math.cos(meridianAngle - Math.PI/2)
+  const mLineY2 = cy + 120 * Math.sin(meridianAngle - Math.PI/2)
 
   return (
-    <svg width="260" height="260" viewBox={`0 0 ${S} ${S}`} style={{ filter: 'drop-shadow(0 0 18px rgba(201,148,58,0.35))' }}>
-      {/* Outer glow ring */}
-      <circle cx={cx} cy={cy} r={outerRing + 8} fill="none" stroke="rgba(201,148,58,0.08)" strokeWidth="14"/>
+    <svg
+      width="260" height="260"
+      viewBox={`0 0 ${S} ${S}`}
+      style={{
+        filter: 'drop-shadow(0 0 20px rgba(139,92,246,0.4))',
+        animation: 'chartRotate 30s linear infinite',
+      }}
+    >
+      <defs>
+        <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(139,92,246,0.5)"/>
+          <stop offset="60%" stopColor="rgba(139,92,246,0.1)"/>
+          <stop offset="100%" stopColor="transparent"/>
+        </radialGradient>
+        <radialGradient id="outerGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(139,92,246,0.08)"/>
+          <stop offset="100%" stopColor="transparent"/>
+        </radialGradient>
+      </defs>
 
-      {/* 12 branch outer boundary */}
-      {outerPts.map((pt, i) => (
+      <style>{`
+        @keyframes chartRotate { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+        @keyframes starPulse { 0%,100% { opacity: 0.25 } 50% { opacity: 0.9 } }
+        @keyframes centerPulse { 0%,100% { opacity: 0.5; transform: scale(1) } 50% { opacity: 1; transform: scale(1.15) } }
+        @keyframes meridianPulse { 0%,100% { opacity: 0.4 } 50% { opacity: 0.9 } }
+      `}</style>
+
+      {/* Outer halo */}
+      <circle cx={cx} cy={cy} r={outerR + 20} fill="url(#outerGlow)"/>
+      <circle cx={cx} cy={cy} r={outerR + 6} fill="none" stroke="rgba(139,92,246,0.08)" strokeWidth="8"/>
+
+      {/* 3 orbital rings */}
+      {[outerR, midR, innerR].map((r, ri) => (
+        <circle key={ri} cx={cx} cy={cy} r={r}
+          fill="none"
+          stroke={['rgba(139,92,246,0.12)', 'rgba(139,92,246,0.2)', 'rgba(139,92,246,0.3)'][ri]}
+          strokeWidth={[0.6, 0.8, 1][ri]}
+          strokeDasharray={ri === 2 ? '4 3' : 'none'}
+        />
+      ))}
+
+      {/* Constellation lines (mid ring) */}
+      {midLines.map((l, i) => (
+        <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
+          stroke="rgba(139,92,246,0.18)" strokeWidth="0.7"/>
+      ))}
+
+      {/* 36 outer stars */}
+      {outerStars.map((s, i) => (
+        <circle key={i} cx={s.x} cy={s.y} r={1.5}
+          fill="rgba(237,232,255,0.85)"
+          style={{
+            animation: `starPulse ${1.5 + (i % 3) * 0.4}s ease-in-out infinite`,
+            animationDelay: `${(i * 0.12) % 2.5}s`,
+          }}
+        />
+      ))}
+
+      {/* 12 mid ring nodes */}
+      {midNodes.map((n, i) => (
         <g key={i}>
-          {/* tick marks */}
-          <line x1={pt.x} y1={pt.y}
-            x2={cx + (outerRing + (i % 3 === 0 ? 10 : 5)) * Math.cos((i/12)*Math.PI*2 - Math.PI/2 + (driftDeg*Math.PI)/180)}
-            y2={cy + (outerRing + (i % 3 === 0 ? 10 : 5)) * Math.sin((i/12)*Math.PI*2 - Math.PI/2 + (driftDeg*Math.PI)/180)}
-            stroke={BRANCH_COLORS[i]} strokeWidth={i % 3 === 0 ? 1.5 : 0.7} opacity={i % 3 === 0 ? 0.9 : 0.4}
+          <circle cx={n.x} cy={n.y} r="2.5"
+            fill={i % 3 === 0 ? '#C9943A' : 'rgba(139,92,246,0.7)'}
+            opacity={i % 3 === 0 ? 0.9 : 0.6}
+            style={{ animation: `starPulse 2s ease-in-out infinite`, animationDelay: `${i * 0.15}s` }}
           />
-          {/* branch label — major ticks */}
-          {i % 3 === 0 && (() => {
-            const a = (i / 12) * Math.PI * 2 - Math.PI/2 + (driftDeg * Math.PI) / 180
-            const lx = cx + (outerRing + 22) * Math.cos(a)
-            const ly = cy + (outerRing + 22) * Math.sin(a)
-            return (
-              <text key={i} x={lx} y={ly} textAnchor="middle" dominantBaseline="central"
-                fill={BRANCH_COLORS[i]} fontSize="9" fontFamily="serif" fontWeight="bold" opacity="0.85">
-                {BRANCHES[i]}
-              </text>
-            )
-          })()}
+          {i % 3 === 0 && (
+            <circle cx={n.x} cy={n.y} r="5" fill="none"
+              stroke="rgba(201,148,58,0.3)" strokeWidth="0.8"
+              style={{ animation: `starPulse 2s ease-in-out infinite`, animationDelay: `${i * 0.15}s` }}
+            />
+          )}
         </g>
       ))}
 
-      {/* Outer ring fill */}
-      <polygon points={outerPts.map(p => `${p.x},${p.y}`).join(' ')} fill="rgba(20,10,5,0.75)" stroke="rgba(201,148,58,0.35)" strokeWidth="0.8"/>
+      {/* 8 inner ring stars */}
+      {innerStars.map((s, i) => (
+        <circle key={i} cx={s.x} cy={s.y} r="1.8"
+          fill="rgba(139,92,246,0.9)"
+          style={{ animation: `starPulse ${1.2 + (i % 4) * 0.3}s ease-in-out infinite`, animationDelay: `${i * 0.2}s` }}
+        />
+      ))}
 
-      {/* Mid ring — 8 fortune palaces / hex */}
-      {Array.from({length: 8}, (_, i) => {
-        const a1 = (i / 8) * Math.PI * 2 - Math.PI/2
-        const a2 = ((i + 1) / 8) * Math.PI * 2 - Math.PI/2
-        const mx1 = cx + midRing * Math.cos(a1), my1 = cy + midRing * Math.sin(a1)
-        const mx2 = cx + midRing * Math.cos(a2), my2 = cy + midRing * Math.sin(a2)
-        const mxm = cx + (midRing * 0.7) * Math.cos((a1+a2)/2)
-        const mym = cy + (midRing * 0.7) * Math.sin((a1+a2)/2)
-        const op = outerPts[i * Math.floor(12/8)]
-        const on = outerPts[((i+1) * Math.floor(12/8)) % 12]
-        return <g key={i}>
-          <path d={`M ${op.x},${op.y} L ${mx1},${my1} A ${midRing} ${midRing} 0 0 1 ${mx2},${my2} Z`}
-            fill="rgba(40,20,8,0.5)" stroke="rgba(201,148,58,0.2)" strokeWidth="0.5"/>
-          <text x={mxm} y={mym} textAnchor="middle" dominantBaseline="central"
-            fill="rgba(201,148,58,0.5)" fontSize="6.5" fontFamily="serif">{(['M','F','P','T','H','R','C','W'])[i]}</text>
-        </g>
-      })}
-
-      {/* Mid ring circle */}
-      <circle cx={cx} cy={cy} r={midRing} fill="none" stroke="rgba(201,148,58,0.35)" strokeWidth="0.8"/>
-
-      {/* Inner ring */}
-      <polygon points={innerPts.map(p => `${p.x},${p.y}`).join(' ')} fill="rgba(30,15,5,0.85)" stroke="rgba(201,148,58,0.25)" strokeWidth="0.6"/>
-      <circle cx={cx} cy={cy} r={innerRing} fill="none" stroke="rgba(201,148,58,0.25)" strokeWidth="0.6"/>
-
-      {/* Core ring */}
-      <circle cx={cx} cy={cy} r={coreRing} fill="rgba(10,5,2,0.9)" stroke="rgba(201,148,58,0.5)" strokeWidth="1"/>
-      <circle cx={cx} cy={cy} r={coreRing - 5} fill="none" stroke="rgba(201,148,58,0.15)" strokeWidth="0.5"/>
-
-      {/* Center dot with glow */}
-      <circle cx={cx} cy={cy} r="5" fill="#C9943A" opacity="0.9"/>
-      <circle cx={cx} cy={cy} r="9" fill="none" stroke="rgba(201,148,58,0.3)" strokeWidth="0.8"/>
-      <circle cx={cx} cy={cy} r="14" fill="none" stroke="rgba(201,148,58,0.12)" strokeWidth="1.2"/>
-
-      {/* Decorative star markers on outer ring (24 xuanji points) */}
-      {Array.from({length: 24}, (_, i) => {
-        const a = (i / 24) * Math.PI * 2 - Math.PI/2 + (driftDeg * Math.PI) / 180
-        const rx = cx + outerRing * Math.cos(a)
-        const ry = cy + outerRing * Math.sin(a)
-        const s = i % 2 === 0 ? 2.2 : 1.4
-        return <circle key={i} cx={rx} cy={ry} r={s} fill="rgba(201,148,58,0.4)"/>
-      })}
-
-      {/* Animated compass needle */}
-      {needleActive && (
-        <g opacity="0.9">
-          <line x1={nx2} y1={ny2} x2={nx1} y2={ny1} stroke="#EF4444" strokeWidth="2.2" strokeLinecap="round"
-            style={{ filter: 'drop-shadow(0 0 4px rgba(239,68,68,0.7))' }}/>
-          <line x1={nx2} y1={ny2} x2={nx1} y2={ny1} stroke="#FCA5A5" strokeWidth="0.8" strokeLinecap="round"/>
-          {/* Needle tip triangle */}
-          <circle cx={nx1} cy={ny1} r="3" fill="#EF4444" opacity="0.8"/>
-          {/* Tail end */}
-          <circle cx={nx2} cy={ny2} r="2" fill="rgba(201,148,58,0.6)"/>
-        </g>
+      {/* Meridian line (appears when stars are placed) */}
+      {step >= 2 && (
+        <line x1={cx} y1={cy} x2={mLineX2} y2={mLineY2}
+          stroke="rgba(239,68,68,0.6)"
+          strokeWidth="1"
+          strokeDasharray="3 2"
+          style={{ animation: 'meridianPulse 1.5s ease-in-out infinite' }}
+        />
       )}
 
-      {/* Subtle cardinal markers */}
-      {[0, 90, 180, 270].map(deg => {
-        const a = (deg * Math.PI) / 180
-        return <g key={deg}>
-          <line x1={cx+(outerRing+2)*Math.cos(a)} y1={cy+(outerRing+2)*Math.sin(a)}
-            x2={cx+(outerRing-6)*Math.cos(a)} y2={cy+(outerRing-6)*Math.sin(a)}
-            stroke="rgba(201,148,58,0.6)" strokeWidth="1.2"/>
-        </g>
-      })}
+      {/* Center glow */}
+      <circle cx={cx} cy={cy} r="18" fill="url(#centerGlow)"/>
+      <circle cx={cx} cy={cy} r="5" fill="#A78BFA"
+        style={{ animation: 'centerPulse 2s ease-in-out infinite' }}/>
+      <circle cx={cx} cy={cy} r="10" fill="none"
+        stroke="rgba(139,92,246,0.4)" strokeWidth="0.8"
+        style={{ animation: 'centerPulse 2s ease-in-out infinite 0.5s' }}/>
     </svg>
   )
 }
@@ -411,14 +416,14 @@ function CalculatingPage({ name, onCancel }: { name: string; onCancel?: () => vo
   const [step, setStep] = useState(0)
   const [progress, setProgress] = useState(0)
   const msgs = [
-    { m: 'Casting the natal chart...', s: 'Mapping celestial positions at your birth moment' },
-    { m: 'Consulting the lunar calendar...', s: 'Converting Gregorian to lunar date' },
-    { m: 'Placing the 14 celestial stars...', s: 'Ziwei, Tianji, Taiyang, Wuqu, and more' },
-    { m: 'Identifying your Ming Palace...', s: 'The center of your life chart' },
-    { m: 'Summoning your Guardian Beast...', s: 'The Shanhaijing guardian awaits' },
+    { m: 'Mapping the stars...', s: 'Charting your celestial birth signature' },
+    { m: 'Reading the lunar cycle...', s: 'Aligning with the moon at your birth' },
+    { m: 'Placing 14 celestial stars...', s: 'Ziwei, Tianji, Taiyang, Wuqu and more' },
+    { m: 'Finding your Ming Palace...', s: 'The center of your life chart' },
+    { m: 'Summoning your Guardian...', s: 'The Shanhaijing ancient one stirs' },
   ]
   useEffect(() => {
-    const t1 = setInterval(() => setStep(s => Math.min(s + 1, msgs.length - 1)), 1400)
+    const t1 = setInterval(() => setStep(s => Math.min(s + 1, msgs.length - 1)), 1500)
     const t2 = setInterval(() => setProgress(p => Math.min(p + 2, 100)), 200)
     return () => { clearInterval(t1); clearInterval(t2) }
   }, [])
@@ -427,24 +432,22 @@ function CalculatingPage({ name, onCancel }: { name: string; onCancel?: () => vo
     <div className="page page-center">
       <Stars />
       <div className="calc-compass-layout">
-        {/* Left: rotating compass */}
+        {/* Left: constellation chart */}
         <div className="compass-wrap">
           <div className="compass-outer-ring" />
-          <LuopanCompass step={step} />
-          {step >= 3 && (
-            <div className="compass-needle-glow" />
-          )}
+          <ConstellationStarChart step={step} />
+          {step >= 2 && <div className="compass-needle-glow" />}
         </div>
 
         {/* Right: text progress */}
         <div className="calc-text-panel">
-          <div className="compass-title">紫微斗数</div>
+          <div className="compass-title">Casting Your Chart</div>
           <div className="compass-subtitle">Ziwei Doushu · Astrology</div>
           <div className="calc-progress"><div className="calc-fill" style={{ width: `${progress}%` }}/></div>
           <div className="calc-pct">{progress}%</div>
           <div className="calc-msg">{msgs[step]?.m}</div>
           <div className="calc-sub">{msgs[step]?.s}</div>
-          <div className="calc-for">Casting chart for {name}...</div>
+          <div className="calc-for">Reading for {name}</div>
           {onCancel && <button className="btn btn-ghost" onClick={onCancel}>← Cancel</button>}
         </div>
       </div>
@@ -452,18 +455,20 @@ function CalculatingPage({ name, onCancel }: { name: string; onCancel?: () => vo
   )
 }
 
-// Profile Reveal (Centered Modal)
+// Profile Reveal (Centered Modal — Blurry Silhouette + Simple Pillars)
 function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: ZiweiChart; onDiscover: () => void; onClose?: () => void; onBack?: () => void }) {
   const beast = BEASTS[chart.guardianBeastId - 1]
   const [v, setV] = useState(false)
   useEffect(() => { const t = setTimeout(() => setV(true), 80); return () => clearTimeout(t) }, [])
+
   return (
     <div className="profile-modal-overlay" style={{ opacity: v ? 1 : 0, transition: 'opacity 0.5s' }}>
       <Stars />
-      <div className="profile-modal-card">
-        {/* Header */}
+      <div className="profile-modal-card profile-reveal-card">
+
+        {/* Close */}
         <div className="profile-modal-header">
-          <div className="eyebrow">✦ YOUR FREE PERSONALITY PROFILE ✦</div>
+          <div className="eyebrow">✦ YOUR Ziwei CHART ✦</div>
           {onClose && (
             <button className="profile-modal-close" onClick={onClose} aria-label="Close">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2 L14 14 M14 2 L2 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
@@ -471,46 +476,67 @@ function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: Ziwe
           )}
         </div>
 
-        {/* Type Badge */}
-        <div className="profile-type">{chart.personalityType}</div>
-        <div className="profile-sub">{chart.personalitySubtype}</div>
-
-        {/* Ming Palace Section */}
-        <div className="profile-ming">
-          <div className="profile-ming-label">Your Ming Palace — {chart.mingPalace}</div>
-          <p className="profile-ming-text">{chart.personalityProfile}</p>
-        </div>
-
-        {/* Pillars Grid */}
-        <div className="profile-grid">
-          {[
-            { l: 'Year Stem', v: chart.calculationDetails.yearlyStem },
-            { l: 'Year Branch', v: chart.calculationDetails.yearlyBranch },
-            { l: 'Month Branch', v: chart.calculationDetails.monthlyBranch },
-            { l: 'Hour Branch', v: chart.calculationDetails.hourlyBranch },
-            { l: 'Ming Palace', v: chart.mingPalace },
-            { l: 'Ziwei Palace', v: chart.calculationDetails.ziweiPalace },
-          ].map((item, i) => (
-            <div key={i} className="profile-grid-item">
-              <div className="profile-grid-label">{item.l}</div>
-              <div className="profile-grid-value" style={{ color: beast.color }}>{item.v}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Guardian Teaser */}
-        <div className="profile-beast-teaser">
-          <img src={beast.icon} alt={beast.name} className="profile-beast-teaser-img" />
-          <div>
-            <div className="profile-beast-teaser-label">Your Guardian Awaits</div>
-            <div className="profile-beast-teaser-name">{beast.name}</div>
-            <div className="profile-beast-teaser-sub" style={{ color: beast.color }}>Unlock to reveal</div>
+        {/* Blurry Guardian Silhouette */}
+        <div className="reveal-silhouette-wrap">
+          <div className="reveal-sil-glow" style={{ background: `radial-gradient(circle, ${beast.glowColor}44 0%, transparent 70%)` }}/>
+          <img
+            src={beast.icon}
+            alt="Guardian"
+            className="reveal-sil-img"
+          />
+          <div className="reveal-sil-mask">
+            <div className="reveal-sil-label">Guardian Enshrouded</div>
+            <div className="reveal-sil-hint">Unlock to reveal</div>
           </div>
         </div>
 
-        {/* Actions */}
-        <button className="btn btn-primary btn-full" onClick={onDiscover}>Discover My Guardian Beast →</button>
-        {onBack && <button className="btn btn-ghost btn-full" onClick={onBack} style={{ marginTop: "0.75rem" }}>← Calculate Another Chart</button>}
+        {/* Poetic Copy */}
+        <div className="reveal-copy">
+          <div className="reveal-copy-title">Your Destiny Structure</div>
+          <div className="reveal-copy-body">
+            You are shaped less by fleeting impulses<br/>
+            and more by enduring inner patterns.<br/>
+            <span style={{ opacity: 0.6 }}>This is not a prediction, but a<br/>
+            reflection of how your forces are aligned.</span>
+          </div>
+          <div className="reveal-copy-guardian">
+            Your Guardian remains unseen.<br/>
+            Unlock the full reading to meet the force<br/>
+            that has walked with you long before<br/>
+            you noticed it.
+          </div>
+        </div>
+
+        {/* Simple Pillars */}
+        <div className="reveal-pillars">
+          <div className="reveal-pillars-label">Your Chart Foundations</div>
+          <div className="reveal-pillars-grid">
+            <div className="reveal-pillar-item">
+              <div className="reveal-pillar-key">Year</div>
+              <div className="reveal-pillar-val" style={{ color: '#C9943A' }}>{chart.calculationDetails.yearlyStem} {chart.calculationDetails.yearlyBranch}</div>
+            </div>
+            <div className="reveal-pillar-item">
+              <div className="reveal-pillar-key">Month</div>
+              <div className="reveal-pillar-val" style={{ color: '#C9943A' }}>{chart.calculationDetails.monthlyBranch}</div>
+            </div>
+            <div className="reveal-pillar-item">
+              <div className="reveal-pillar-key">Hour</div>
+              <div className="reveal-pillar-val" style={{ color: '#C9943A' }}>{chart.calculationDetails.hourlyBranch}</div>
+            </div>
+            <div className="reveal-pillar-item">
+              <div className="reveal-pillar-key">Ming Palace</div>
+              <div className="reveal-pillar-val" style={{ color: '#C9943A' }}>{chart.mingPalace}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="reveal-cta">
+          <button className="btn btn-primary btn-full" onClick={onDiscover}>
+            Unlock Full Reading — $1.99
+          </button>
+          {onBack && <button className="btn btn-ghost btn-full" onClick={onBack}>← Calculate Another</button>}
+        </div>
       </div>
     </div>
   )
@@ -555,7 +581,7 @@ function SilhouetteModal({ beast, onClose, onUnlock }: { beast: typeof BEASTS[nu
         {phase >= 2 && (
           <div className="sil-desc">
             <p>Your Guardian is <strong style={{ color: beast.color }}>{beast.name}</strong> — divine protector of the <strong>{beast.palace}</strong>.</p>
-            <button className="btn btn-primary btn-full" onClick={onUnlock}>Unlock Full Reading — $9.99 →</button>
+            <button className="btn btn-primary btn-full" onClick={onUnlock}>Unlock Full Reading — $1.99 →</button>
             <p className="sil-note">Instant access · No subscription</p>
           </div>
         )}
@@ -604,9 +630,9 @@ function PaymentModal({ beast, onClose, onSuccess }: { beast: typeof BEASTS[numb
             </div>
           ))}
         </div>
-        <div className="pay-price">$9.99 <span>one-time payment</span></div>
+        <div className="pay-price">$1.99 <span>one-time payment</span></div>
         <button className="btn btn-primary btn-full" onClick={handlePay} disabled={processing}>
-          {processing ? <span className="dots"><span>.</span><span>.</span><span>.</span></span> : 'Complete Purchase — $9.99'}
+          {processing ? <span className="dots"><span>.</span><span>.</span><span>.</span></span> : 'Complete Purchase — $1.99'}
         </button>
         <div className="pay-secure">
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="1" y="4" width="10" height="7" rx="1" stroke="rgba(237,232,245,0.3)" strokeWidth="0.8"/><path d="M3.5 4V2.5A2.5 2.5 0 0 1 8.5 2.5V4" stroke="rgba(237,232,245,0.3)" strokeWidth="0.8" fill="none"/></svg>
