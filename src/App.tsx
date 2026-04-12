@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import { AuthModal } from './components/AuthModal'
 import { useAuth } from './contexts/AuthContext'
+import { logOut } from './lib/firebase'
 import { calculateZiweiChart } from './engine/ziweiCalculator'
 import type { ZiweiChart } from './engine/ziweiCalculator'
 
@@ -872,9 +873,9 @@ export default function App() {
   const [formData, setFormData] = useState<{ name: string; year: number; month: number; day: number; hour: number; gender: 'male' | 'female' } | null>(null)
   const [chart, setChart] = useState<ZiweiChart | null>(null)
   const [modal, setModal] = useState<ModalStep>(null)
+  const [, setPaid] = useState(false)  // paid tracked for future use
   const { user } = useAuth()
   const [authModal, setAuthModal] = useState(false)
-  const [, setPaid] = useState(false)  // paid tracked for future use
 
   const handleFormSubmit = (data: typeof formData) => {
     setFormData(data)
@@ -900,7 +901,7 @@ export default function App() {
       >
         {user ? '\u2605 Account' : '\u2606 Sign In'}
       </button>
-      {journey === 'hero' && <HeroPage onBegin={() => setJourney('world-intro')} />}
+      {journey === 'hero' && <HeroPage onBegin={() => setJourney('world-intro')} onSignIn={() => setAuthModal(true)} user={user} onSignOut={() => logOut()} />}
       {journey === 'world-intro' && <><Nav stepBack={resetAll} /><WorldIntroPage onNext={() => setJourney('rules')} onBack={resetAll} /></>}
       {journey === 'rules' && <><Nav stepBack={() => setJourney('world-intro')} /><RulesPage onNext={() => setJourney('input')} onBack={() => setJourney('world-intro')} /></>}
       {journey === 'input' && <><Nav stepBack={() => setJourney('rules')} /><InputPage onSubmit={handleFormSubmit} onBack={() => setJourney('rules')} /></>}
@@ -929,7 +930,6 @@ export default function App() {
           onLoginSuccess={(u) => { console.log('Signed in:', u?.email); setAuthModal(false) }}
         />
       )}
-
     </div>
   )
 }
