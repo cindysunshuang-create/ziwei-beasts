@@ -1,4 +1,4 @@
-name: Deploy to DigitalOcean
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -6,8 +6,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,30 +31,17 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_APP_TITLE: "紫微斗数"
+          VITE_APP_TITLE: "Ziwei Doushu"
           BASE_URL: /
 
-      - name: Deploy to DigitalOcean via rsync
-        env:
-          DEPLOY_KEY: ${{ secrets.DO_DEPLOY_KEY }}
-          DO_HOST: ${{ secrets.DO_HOST }}
-          DO_PORT: ${{ secrets.DO_PORT }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p "${DO_PORT:-22}" -H "$DO_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-          # Deploy without --delete so server-side symlinks / extra dirs are preserved
-          rsync -avz -e "ssh -p ${DO_PORT:-22} -o StrictHostKeyChecking=no" dist/ root@"$DO_HOST":/var/www/easternmystical.com/html/
+      - name: Add CNAME for custom domain
+        run: echo "easternmystical.com" > dist/CNAME
 
-      - name: Recreate ziwei-beasts symlink
-        env:
-          DEPLOY_KEY: ${{ secrets.DO_DEPLOY_KEY }}
-          DO_HOST: ${{ secrets.DO_HOST }}
-          DO_PORT: ${{ secrets.DO_PORT }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh -p "${DO_PORT:-22}" -o StrictHostKeyChecking=no root@"$DO_HOST" \
-            "ln -sfn /var/www/easternmystical.com/html /var/www/easternmystical.com/html/ziwei-beasts && echo 'Symlink OK'"
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
