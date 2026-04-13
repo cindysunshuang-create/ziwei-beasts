@@ -1,28 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import { AuthModal } from './components/AuthModal'
+import { GuardianNarrative } from './components/GuardianNarrative'
+import { GuardianSkills } from './components/GuardianSkills'
 import { useAuth } from './contexts/AuthContext'
 import { logOut } from './lib/firebase'
 import { calculateZiweiChart } from './engine/ziweiCalculator'
 import type { ZiweiChart } from './engine/ziweiCalculator'
-
-const BEASTS = [
-  {id:1,name:'Qilin',element:'Wood',zodiac:'Rat',branch:'Zi',palace:'Ming Palace',tagline:'Divine Clarity & Harmony',color:'#A78BFA',glowColor:'rgba(139,92,246,0.4)',icon:'/beasts/icon_01_qilin.png',desc:'The Celestial Qilin appears only in eras of profound peace.',personality:'Compassionate and destined for leadership.',strength:'Natural wisdom, graceful navigation of complexity',growthEdge:'Tendency to avoid confrontation'},
-  {id:2,name:'Huzhu',element:'Earth',zodiac:'Ox',branch:'Chou',palace:'Parents Palace',tagline:'Ancient Wisdom & Legacy',color:'#FBBF24',glowColor:'rgba(251,191,36,0.35)',icon:'/beasts/icon_02_huzhu.png',desc:'The serpentine Huzhu coils through the roots of mountains.',personality:'Deeply rooted in tradition yet quietly innovative.',strength:'Exceptional memory and strategic thinking',growthEdge:'Can resist necessary change when too attached'},
-  {id:3,name:'Baihu',element:'Metal',zodiac:'Tiger',branch:'Yin',palace:'Fortune Palace',tagline:'Courage & Abundance',color:'#CBD5E1',glowColor:'rgba(203,213,225,0.35)',icon:'/beasts/icon_03_baihu.png',desc:'The White Tiger of the West commands the autumn winds.',personality:'A fierce protector with a heart of pure gold.',strength:'Immense physical and moral courage',growthEdge:'Impulsivity — the drive to act now rather than deliberate'},
-  {id:4,name:'Zhuolu',element:'Fire',zodiac:'Dragon',branch:'Mao',palace:'Siblings Palace',tagline:'Vitality & Transformation',color:'#F97316',glowColor:'rgba(249,115,22,0.4)',icon:'/beasts/icon_04_zhuolu.png',desc:'The Fire Dragon Zhuolu opens its eyes to summon day.',personality:'A catalyst for change in every room.',strength:'Extraordinary drive and ability to mobilize communities',growthEdge:'Burning too brightly'},
-  {id:5,name:'Qiongqi',element:'Metal',zodiac:'Snake',branch:'Chen',palace:'Travel Palace',tagline:'Insight & Sacred Protection',color:'#A855F7',glowColor:'rgba(168,85,247,0.4)',icon:'/beasts/icon_05_qiongqi.png',desc:'The Qiongqi exists at the boundary between worlds.',personality:'Keenly perceptive with an almost supernatural ability.',strength:'Exceptional analytical ability',growthEdge:'Judging others harshly while ignoring your own flaws'},
-  {id:6,name:'Fengshen',element:'Wood',zodiac:'Horse',branch:'Si',palace:'Virtue Palace',tagline:'Freedom & Spiritual Vision',color:'#38BDF8',glowColor:'rgba(56,189,248,0.35)',icon:'/beasts/icon_06_fengshen.png',desc:'The Wind Deer Fengshen moves between worlds as freely as the wind.',personality:'Freedom-loving and spiritually attuned.',strength:'Rare adaptability',growthEdge:'Resistance to commitment'},
-  {id:7,name:'Taotie',element:'Earth',zodiac:'Goat',branch:'Wu',palace:'Body Palace',tagline:'Mastery & Eternal Quest',color:'#D97706',glowColor:'rgba(217,119,6,0.35)',icon:'/beasts/icon_07_taotie.png',desc:'The Taotie mask represents the sacred hunger for knowledge.',personality:'Intense and relentlessly focused.',strength:'Unwavering concentration and deep mastery',growthEdge:'The danger of obsession'},
-  {id:8,name:'Fenghuang',element:'Fire',zodiac:'Monkey',branch:'Wei',palace:'Wealth Palace',tagline:'Rebirth & Creative Genius',color:'#EF4444',glowColor:'rgba(239,68,68,0.4)',icon:'/beasts/icon_08_fenghuang.png',desc:'The Vermilion Phoenix rises from its own ashes.',personality:'A creative genius with profound emotional intelligence.',strength:'Extraordinary creative gifts and resilience',growthEdge:'Inconsistency'},
-  {id:9,name:'Longwang',element:'Water',zodiac:'Rooster',branch:'Shen',palace:'Career Palace',tagline:'Power & Emotional Depth',color:'#0EA5E9',glowColor:'rgba(14,165,233,0.35)',icon:'/beasts/icon_09_longwang.png',desc:'The Dragon Kings reign supreme over the four seas.',personality:'Ambitious and emotionally deep in equal measure.',strength:'Natural leadership and emotional depth',growthEdge:'The weight of expectations'},
-  {id:10,name:'Nixi',element:'Metal',zodiac:'Dog',branch:'You',palace:'Friends Palace',tagline:'Integrity & True Loyalty',color:'#E0E7FF',glowColor:'rgba(224,231,255,0.35)',icon:'/beasts/icon_10_nixi.png',desc:'The celestial Nixi unicorn walks the earth unseen.',personality:'Loyal to a remarkable degree and spiritually perceptive.',strength:'Unshakeable loyalty and moral character',growthEdge:'Being overly trusting'},
-  {id:11,name:'Baxia',element:'Water',zodiac:'Pig',branch:'Xu',palace:'Health Palace',tagline:'Endurance & Cosmic Wisdom',color:'#34D399',glowColor:'rgba(52,211,153,0.35)',icon:'/beasts/icon_11_baxia.png',desc:'The divine tortoise Baxia carries the world on its back.',personality:'Profoundly wise and extraordinarily patient.',strength:'Extraordinary endurance and deep wisdom',growthEdge:'Slowness to adapt to rapid change'},
-  {id:12,name:'Qingniu',element:'Earth',zodiac:'Rat',branch:'Hai',palace:'Property Palace',tagline:'Harmony & Sacred Strength',color:'#6EE7B7',glowColor:'rgba(110,231,183,0.35)',icon:'/beasts/icon_12_qingniu.png',desc:'The sacred Qingniu ox was the vehicle of Laozi.',personality:'Humble and immensely capable.',strength:'Inner harmony and balanced strength',growthEdge:'Carrying burdens alone'},
-] as const
+import guardiansData from './data/guardians.json'
+import type { Guardian } from './types/guardians'
 
 type JourneyStep = 'hero' | 'world-intro' | 'rules' | 'input' | 'calculating' | 'profile' | 'bind'
-type ModalStep = 'silhouette' | 'payment' | 'revealing' | 'reveal' | null
+type ModalStep = 'silhouette' | 'revealing' | 'reveal' | null
+
+const BEASTS = guardiansData as unknown as readonly Guardian[]
 
 // Stars
 function Stars() {
@@ -697,7 +688,7 @@ function RevealAnimation({ beast, onDone }: { beast: typeof BEASTS[number]; onDo
 // Guardian Reveal Page
 function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiChart; onBind: () => void; onClose?: () => void; onBack?: () => void }) {
   const beast = BEASTS[chart.guardianBeastId - 1]
-  const [tab, setTab] = useState<'myth' | 'personality' | 'chart'>('myth')
+  const [tab, setTab] = useState<'myth' | 'narrative' | 'chart' | 'powers'>('myth')
   const [v, setV] = useState(false)
   useEffect(() => { const t = setTimeout(() => setV(true), 100); return () => clearTimeout(t) }, [])
   return (
@@ -727,9 +718,9 @@ function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiCh
           </div>
         </div>
         <div className="guardian-tabs-row">
-          {(['myth', 'personality', 'chart'] as const).map(tid => (
+          {(['myth', 'narrative', 'chart', 'powers'] as const).map(tid => (
             <button key={tid} className={`guardian-tab ${tab === tid ? 'active' : ''}`} onClick={() => setTab(tid)}>
-              {tid === 'myth' ? 'Mythology' : tid === 'personality' ? 'Your Arc' : 'Chart'}
+              {tid === 'myth' ? 'Mythology' : tid === 'narrative' ? 'Your Arc' : tid === 'chart' ? 'Chart' : 'Powers'}
             </button>
           ))}
         </div>
@@ -741,20 +732,14 @@ function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiCh
               <div className="guardian-quote">"{beast.tagline}" — The Shanhaijing</div>
             </div>
           )}
-          {tab === 'personality' && (
+          {tab === 'narrative' && (
             <div className="guardian-section">
-              <h3 className="guardian-section-title">Your Personality Arc</h3>
-              <p className="guardian-section-text">{beast.personality}</p>
-              <div className="guardian-traits">
-                <div className="guardian-trait" style={{ borderColor: beast.color }}>
-                  <div className="guardian-trait-label">✦ Divine Strength</div>
-                  <p>{beast.strength}</p>
-                </div>
-                <div className="guardian-trait" style={{ borderColor: `${beast.color}80` }}>
-                  <div className="guardian-trait-label">✧ Growth Edge</div>
-                  <p>{beast.growthEdge}</p>
-                </div>
-              </div>
+              <GuardianNarrative guardian={beast} />
+            </div>
+          )}
+          {tab === 'powers' && (
+            <div className="guardian-section">
+              <GuardianSkills guardian={beast} />
             </div>
           )}
           {tab === 'chart' && (
