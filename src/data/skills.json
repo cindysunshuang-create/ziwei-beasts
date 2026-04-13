@@ -1,0 +1,362 @@
+[
+  {
+    "id": "heavenly-burden",
+    "name": "Heavenly Burden",
+    "type": "Passive",
+    "description": "Naturally attracts responsibility and leadership roles.",
+    "ui": {
+      "icon": "/assets/skills/crown.svg",
+      "animationPreset": "pulse-gold"
+    }
+  },
+  {
+    "id": "mandate-alignment",
+    "name": "Mandate Alignment",
+    "type": "Triggered",
+    "description": "Clarity emerges when decisions impact others.",
+    "ui": {
+      "icon": "/assets/skills/mandate.svg",
+      "animationPreset": "align-glow"
+    }
+  },
+  {
+    "id": "sovereign-resolve",
+    "name": "Sovereign Resolve",
+    "type": "Cyclic",
+    "description": "Periods of pressure lead to long-term breakthroughs.",
+    "ui": {
+      "icon": "/assets/skills/resolve.svg",
+      "animationPreset": "slow-rise"
+    }
+  },
+  {
+    "id": "equilibrium-sense",
+    "name": "Equilibrium Sense",
+    "type": "Passive",
+    "description": "Detects imbalance in complex systems.",
+    "ui": {
+      "icon": "/assets/skills/balance.svg",
+      "animationPreset": "center-pulse"
+    }
+  },
+  {
+    "id": "mediating-force",
+    "name": "Mediating Force",
+    "type": "Triggered",
+    "description": "Stabilizes conflicting dynamics.",
+    "ui": {
+      "icon": "/assets/skills/mediate.svg",
+      "animationPreset": "wave-soft"
+    }
+  },
+  {
+    "id": "center-renewal",
+    "name": "Center Renewal",
+    "type": "Cyclic",
+    "description": "Re-centers life direction during transitions.",
+    "ui": {
+      "icon": "/assets/skills/renew.svg",
+      "animationPreset": "rotate-slow"
+    }
+  },
+  {
+    "id": "conflict-instinct",
+    "name": "Conflict Instinct",
+    "type": "Passive",
+    "description": "Energy increases under resistance.",
+    "ui": {
+      "icon": "/assets/skills/claw.svg",
+      "animationPreset": "tension-sharp"
+    }
+  },
+  {
+    "id": "decisive-strike",
+    "name": "Decisive Strike",
+    "type": "Triggered",
+    "description": "Action clarity emerges in crisis.",
+    "ui": {
+      "icon": "/assets/skills/strike.svg",
+      "animationPreset": "flash-cut"
+    }
+  },
+  {
+    "id": "battle-cycle",
+    "name": "Battle Cycle",
+    "type": "Cyclic",
+    "description": "Periodic confrontations reshape identity.",
+    "ui": {
+      "icon": "/assets/skills/battle.svg",
+      "animationPreset": "pulse-red"
+    }
+  },
+  {
+    "id": "enduring-memory",
+    "name": "Enduring Memory",
+    "type": "Passive",
+    "description": "Retains emotional and experiential depth.",
+    "ui": {
+      "icon": "/assets/skills/memory.svg",
+      "animationPreset": "slow-glow"
+    }
+  },
+  {
+    "id": "protective-withdrawal",
+    "name": "Protective Withdrawal",
+    "type": "Triggered",
+    "description": "Retreat restores strength.",
+    "ui": {
+      "icon": "/assets/skills/shell.svg",
+      "animationPreset": "fade-in"
+    }
+  },
+  {
+    "id": "slow-ascension",
+    "name": "Slow Ascension",
+    "type": "Cyclic",
+    "description": "Long cycles of steady growth.",
+    "ui": {
+      "icon": "/assets/skills/ascend.svg",
+      "animationPreset": "rise-gradual"
+    }
+  },
+  {
+    "id": "expressive-flame",
+    "name": "Expressive Flame",
+    "type": "Passive",
+    "description": "Renewal through expression.",
+    "ui": {
+      "icon": "/assets/skills/flame.svg",
+      "animationPreset": "ember"
+    }
+  },
+  {
+    "id": "burn-and-rise",
+    "name": "Burn and Rise",
+    "type": "Triggered",
+    "description": "Loss initiates transformation.",
+    "ui": {
+      "icon": "/assets/skills/phoenix.svg",
+      "animationPreset": "ignite"
+    }
+  },
+  {
+    "id": "phoenix-cycle",
+    "name": "Phoenix Cycle",
+    "type": "Cyclic",
+    "description": "Periodic identity rebirth.",
+    "ui": {
+      "icon": "/assets/skills/rebirth.svg",
+      "animationPreset": "flare-reset"
+    }
+  },
+  {
+    "id": "multi-layer-perception",
+    "name": "Multi-layer Perception",
+    "type": "Passive",
+    "description": "Reads beneath surface narratives.",
+    "ui": {
+      "icon": "/assets/skills/eye.svg",
+      "animationPreset": "blink-soft"
+    }
+  },
+  {
+    "id": "strategic-adaptation",
+    "name": "Strategic Adaptation",
+    "type": "Triggered",
+    "description": "Adapts behavior based on hidden signals.",
+    "ui": {
+      "icon": "/assets/skills/strategy.svg",
+      "animationPreset": "shift"
+    }
+  },
+  {
+    "id": "visibility-control",
+    "name": "Visibility Control",
+    "type": "Cyclic",
+    "description": "Alternates between exposure and concealment.",
+    "ui": {
+      "icon": "/assets/skills/mask.svg",
+      "animationPreset": "fade-toggle"
+    }
+  },
+  {
+    "id": "creative-hunger",
+    "name": "Creative Hunger",
+    "type": "Passive",
+    "description": "Desire fuels innovation.",
+    "ui": {
+      "icon": "/assets/skills/hunger.svg",
+      "animationPreset": "throb"
+    }
+  },
+  {
+    "id": "excess-threshold",
+    "name": "Excess Threshold",
+    "type": "Triggered",
+    "description": "Overindulgence forces reflection.",
+    "ui": {
+      "icon": "/assets/skills/warning.svg",
+      "animationPreset": "shake"
+    }
+  },
+  {
+    "id": "expansion-phase",
+    "name": "Expansion Phase",
+    "type": "Cyclic",
+    "description": "Bursts of rapid growth.",
+    "ui": {
+      "icon": "/assets/skills/expand.svg",
+      "animationPreset": "zoom-out"
+    }
+  },
+  {
+    "id": "rule-skepticism",
+    "name": "Rule Skepticism",
+    "type": "Passive",
+    "description": "Questions moral authority.",
+    "ui": {
+      "icon": "/assets/skills/question.svg",
+      "animationPreset": "tilt"
+    }
+  },
+  {
+    "id": "shadow-exposure",
+    "name": "Shadow Exposure",
+    "type": "Triggered",
+    "description": "Reveals inconvenient truths.",
+    "ui": {
+      "icon": "/assets/skills/shadow.svg",
+      "animationPreset": "fracture"
+    }
+  },
+  {
+    "id": "rebellion-arc",
+    "name": "Rebellion Arc",
+    "type": "Cyclic",
+    "description": "Periodic rupture with norms.",
+    "ui": {
+      "icon": "/assets/skills/rebel.svg",
+      "animationPreset": "break"
+    }
+  },
+  {
+    "id": "attachment-depth",
+    "name": "Attachment Depth",
+    "type": "Passive",
+    "description": "Forms intense bonds.",
+    "ui": {
+      "icon": "/assets/skills/link.svg",
+      "animationPreset": "coil"
+    }
+  },
+  {
+    "id": "emotional-bind",
+    "name": "Emotional Bind",
+    "type": "Triggered",
+    "description": "Difficulty releasing connections.",
+    "ui": {
+      "icon": "/assets/skills/bind.svg",
+      "animationPreset": "tighten"
+    }
+  },
+  {
+    "id": "detachment-trial",
+    "name": "Detachment Trial",
+    "type": "Cyclic",
+    "description": "Tests of letting go.",
+    "ui": {
+      "icon": "/assets/skills/unbind.svg",
+      "animationPreset": "release"
+    }
+  },
+  {
+    "id": "emotional-amplifier",
+    "name": "Emotional Amplifier",
+    "type": "Passive",
+    "description": "Heightened emotional sensitivity.",
+    "ui": {
+      "icon": "/assets/skills/amplify.svg",
+      "animationPreset": "pulse-blue"
+    }
+  },
+  {
+    "id": "inner-storm",
+    "name": "Inner Storm",
+    "type": "Triggered",
+    "description": "Emotional overload precedes insight.",
+    "ui": {
+      "icon": "/assets/skills/storm.svg",
+      "animationPreset": "wave-chaos"
+    }
+  },
+  {
+    "id": "integration-window",
+    "name": "Integration Window",
+    "type": "Cyclic",
+    "description": "Chaos resolves into clarity.",
+    "ui": {
+      "icon": "/assets/skills/integrate.svg",
+      "animationPreset": "settle"
+    }
+  },
+  {
+    "id": "vision-expansion",
+    "name": "Vision Expansion",
+    "type": "Passive",
+    "description": "Sees beyond current scale.",
+    "ui": {
+      "icon": "/assets/skills/vision.svg",
+      "animationPreset": "horizon"
+    }
+  },
+  {
+    "id": "leap-potential",
+    "name": "Leap Potential",
+    "type": "Triggered",
+    "description": "Opportunity demands courage.",
+    "ui": {
+      "icon": "/assets/skills/leap.svg",
+      "animationPreset": "jump"
+    }
+  },
+  {
+    "id": "ascension-cycle",
+    "name": "Ascension Cycle",
+    "type": "Cyclic",
+    "description": "Periodic life scale shifts.",
+    "ui": {
+      "icon": "/assets/skills/ascend.svg",
+      "animationPreset": "lift"
+    }
+  },
+  {
+    "id": "boundary-awareness",
+    "name": "Boundary Awareness",
+    "type": "Passive",
+    "description": "Instinctive rule detection.",
+    "ui": {
+      "icon": "/assets/skills/boundary.svg",
+      "animationPreset": "outline"
+    }
+  },
+  {
+    "id": "moral-arbitration",
+    "name": "Moral Arbitration",
+    "type": "Triggered",
+    "description": "Forced to define limits.",
+    "ui": {
+      "icon": "/assets/skills/judge.svg",
+      "animationPreset": "scale"
+    }
+  },
+  {
+    "id": "structural-reset",
+    "name": "Structural Reset",
+    "type": "Cyclic",
+    "description": "Reevaluation of rules and values.",
+    "ui": {
+      "icon": "/assets/skills/reset.svg",
+      "animationPreset": "reframe"
+    }
+  }
+]
