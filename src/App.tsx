@@ -638,49 +638,75 @@ function PaymentModal({ beast, onClose, onSuccess }: { beast: typeof BEASTS[numb
 }
 
 // Reveal Animation
+// Full reveal ceremony: beast emerges → speaks → shows powers
 function RevealAnimation({ beast, onDone }: { beast: typeof BEASTS[number]; onDone: () => void }) {
   const [phase, setPhase] = useState(0)
+  const quotes = [
+    { label: "I am here.", text: beast.desc },
+    { label: "The Encounter", text: beast.narrative.opening.slice(0, 110) + "..." },
+    { label: "Your Nature", text: beast.narrative.coreNature.slice(0, 110) + "..." },
+    { label: "The Invitation", text: beast.narrative.guidance.slice(0, 100) + "..." },
+  ]
   useEffect(() => {
     const ts = [
-      setTimeout(() => setPhase(1), 500),
-      setTimeout(() => setPhase(2), 1600),
-      setTimeout(() => setPhase(3), 2800),
-      setTimeout(() => onDone(), 5200),
+      setTimeout(() => setPhase(1), 600),
+      setTimeout(() => setPhase(2), 2200),
+      setTimeout(() => setPhase(3), 4200),
+      setTimeout(() => setPhase(4), 6000),
+      setTimeout(() => onDone(), 7600),
     ]
     return () => ts.forEach(clearTimeout)
   }, [])
+  const q = quotes[phase - 1] ?? quotes[0]
   return (
     <div className="reveal-overlay">
       <Stars />
       <button className="reveal-close" onClick={onDone} aria-label="Skip">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3 L15 15 M15 3 L3 15" stroke="rgba(237,232,245,0.5)" strokeWidth="1.5" strokeLinecap="round"/></svg>
       </button>
-      <div className={`reveal-iris ${phase >= 1 ? 'open' : ''}`} />
-      <div className={`reveal-center ${phase >= 2 ? 'vis' : ''}`}>
+      <div className={`reveal-iris ${phase >= 1 ? "open" : ""}`} />
+      <div className={`reveal-center ${phase >= 2 ? "vis" : ""}`}>
         <div className="reveal-glow" style={{ background: `radial-gradient(circle, ${beast.glowColor} 0%, transparent 65%)` }}/>
         <img src={beast.icon} alt={beast.name} className="reveal-img" />
         <div className="reveal-particles">
-          {Array.from({ length: 20 }, (_, i) => {
-            const angle = (i / 20) * 360
-            const dist = 50 + (i % 4) * 20
-            const delay = (i % 6) * 0.12
+          {Array.from({ length: 20 }, (_, i) => (
+            <div key={i} className="r-particle"
+              style={{ transform: `rotate(${(i / 20) * 360}deg) translateX(${50 + (i % 4) * 20}px)`, animationDelay: `${(i % 6) * 0.15}s` }}
+            />
+          ))}
+        </div>
+      </div>
+      <div className={`reveal-name-block ${phase >= 2 ? "vis" : ""}`}>
+        <div className="reveal-branch" style={{ color: beast.color, borderColor: `${beast.color}50` }}>
+          {beast.cnName} · {beast.element}
+        </div>
+        <div className="reveal-name-lg">{beast.name}</div>
+        <div className="reveal-tag-sm" style={{ color: beast.color }}>{beast.tagline}</div>
+      </div>
+      <div className={`reveal-quote-card ${phase >= 3 ? "vis" : ""}`} style={{ borderColor: `${beast.color}30` }}>
+        <div className="rq-label" style={{ color: beast.color }}>{q.label}</div>
+        <p className="rq-text">"{q.text}"</p>
+      </div>
+      <div className={`reveal-skills-strip ${phase >= 4 ? "vis" : ""}`}>
+        <div className="reveal-skills-label">Your Guardian Powers</div>
+        <div className="reveal-skills-pills">
+          {(beast.skills as unknown as string[]).map((sid) => {
+            const name = (sid as string).split("-").map((w: string) => w[0].toUpperCase() + w.slice(1)).join(" ")
             return (
-              <div key={i} className="r-particle"
-                style={{ transform: `rotate(${angle}deg) translateX(${dist}px)`, animationDelay: `${delay}s` }}
-              />
+              <span key={sid as string} className="reveal-skill-pill"
+                style={{ color: beast.color, borderColor: `${beast.color}40` }}>
+                {name}
+              </span>
             )
           })}
         </div>
       </div>
-      {phase >= 3 && (
-        <div className="reveal-name-block">
-          <div className="reveal-branch" style={{ color: beast.color, borderColor: `${beast.color}50` }}>
-            {beast.zodiac} · {beast.branch} Branch · {beast.palace}
-          </div>
-          <div className="reveal-name-lg">{beast.name}</div>
-          <div className="reveal-tag-sm" style={{ color: beast.color }}>{beast.tagline}</div>
-        </div>
-      )}
+      <div className="reveal-dots">
+        {[1,2,3,4].map(n => (
+          <div key={n} className={`reveal-dot ${phase >= n ? "active" : ""}`}
+            style={{ background: phase >= n ? beast.color : "rgba(255,255,255,0.15)" }} />
+        ))}
+      </div>
     </div>
   )
 }
