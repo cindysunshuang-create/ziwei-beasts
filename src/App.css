@@ -302,3 +302,197 @@ body{background:var(--cosmic);color:var(--text);font-family:var(--f-body);line-h
 .hero-signin-btn:hover{border-color:rgba(201,148,58,0.5);color:#C9943A;background:rgba(201,148,58,0.05)}
 .hero-user-info{display:flex;flex-direction:column;align-items:center;gap:0.4rem;margin-top:0.5rem}
 .hero-user-info span{font-family:var(--f-ui);font-size:0.7rem;color:rgba(201,148,58,0.6);letter-spacing:0.1em}
+
+/* ═══════════════════════════════════════════════════════
+   GUARDIAN NARRATIVE
+   Five-section ritual reading: encounter / nature / pattern / wound / invitation
+   ═══════════════════════════════════════════════════════ */
+.guardian-narrative{display:flex;flex-direction:column;gap:2rem}
+.narrative-section{animation:fadeUp 2s ease-in-out both}
+.narrative-section-label{font-family:var(--f-ui);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(201,148,58,0.15)}
+.narrative-section-text{font-family:var(--f-body);font-size:0.95rem;line-height:1.9;color:var(--text-muted);font-style:italic}
+
+/* ═══════════════════════════════════════════════════════
+   GUARDIAN SKILLS
+   Three-skill display: Passive / Triggered / Cyclic
+   ═══════════════════════════════════════════════════════ */
+.guardian-skills-section{}
+.guardian-skills-label{font-family:var(--f-ui);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1rem}
+.guardian-skills-grid{display:flex;flex-direction:column;gap:0.75rem}
+.guardian-skill-card{
+  display:flex;flex-direction:column;gap:0.6rem;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+  border-radius:12px;padding:1rem 1.1rem;
+  animation:fadeUp 1.5s ease-in-out both;
+  transition:border-color 0.8s ease-in-out,background 0.8s ease-in-out;
+}
+.guardian-skill-card:hover{border-color:var(--border-gold);background:rgba(255,255,255,0.06)}
+.guardian-skill-header{display:flex;align-items:center;gap:0.75rem}
+.guardian-skill-icon-wrap{
+  width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  transition:all 0.8s ease-in-out;
+}
+.guardian-skill-meta{flex:1}
+.guardian-skill-name{font-family:var(--f-display);font-size:0.88rem;color:var(--text);letter-spacing:0.05em;font-weight:400}
+.guardian-skill-type{font-family:var(--f-ui);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;margin-top:0.15rem}
+.guardian-skill-desc{font-family:var(--f-body);font-size:0.82rem;line-height:1.7;color:var(--text-muted);font-style:italic}
+
+/* Skill type colors */
+.guardian-skill-card.skill-type-passive .guardian-skill-type{color:#38BDF8}
+.guardian-skill-card.skill-type-passive .guardian-skill-icon-wrap{border-color:rgba(56,189,248,0.25);color:#38BDF8}
+.guardian-skill-card.skill-type-triggered .guardian-skill-type{color:#F97316}
+.guardian-skill-card.skill-type-triggered .guardian-skill-icon-wrap{border-color:rgba(249,115,22,0.25);color:#F97316}
+.guardian-skill-card.skill-type-cyclic .guardian-skill-type{color:#A855F7}
+.guardian-skill-card.skill-type-cyclic .guardian-skill-icon-wrap{border-color:rgba(168,85,247,0.25);color:#A855F7}
+
+/* ─── Skill Animation Presets ─────────────────────────── */
+/* pulse-gold */
+.skill-pulse-gold{animation:sPulsGold 2.5s ease-in-out infinite}
+@keyframes sPulsGold{0%,100%{box-shadow:0 0 0 0 rgba(201,148,58,0.2)}50%{box-shadow:0 0 12px 4px rgba(201,148,58,0.35)}}
+
+/* align-glow */
+.skill-align-glow{animation:sAlignGlow 3s ease-in-out infinite}
+@keyframes sAlignGlow{0%,100%{opacity:.7}50%{opacity:1;box-shadow:0 0 14px 4px rgba(139,92,246,0.4)}}
+
+/* slow-rise */
+.skill-slow-rise{animation:sSlowRise 4s ease-in-out infinite}
+@keyframes sSlowRise{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* center-pulse */
+.skill-center-pulse{animation:sCenterPulse 3s ease-in-out infinite}
+@keyframes sCenterPulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.1);opacity:1}}
+
+/* wave-soft */
+.skill-wave-soft{animation:sWaveSoft 3.5s ease-in-out infinite}
+@keyframes sWaveSoft{0%,100%{border-color:rgba(56,189,248,0.2)}50%{border-color:rgba(56,189,248,0.5)}}
+
+/* rotate-slow */
+.skill-rotate-slow{animation:sRotateSlow 6s linear infinite}
+@keyframes sRotateSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* tension-sharp */
+.skill-tension-sharp{animation:sTensionSharp 2s ease-in-out infinite}
+@keyframes sTensionSharp{0%,100%{border-color:rgba(249,115,22,0.2);transform:scale(1)}50%{border-color:rgba(249,115,22,0.7);transform:scale(1.05)}}
+
+/* flash-cut */
+.skill-flash-cut{animation:sFlashCut 2s ease-out infinite;animation-delay:1s}
+@keyframes sFlashCut{0%,100%{opacity:.6}10%{opacity:1;box-shadow:0 0 16px 4px rgba(249,115,22,0.6)}}
+
+/* pulse-red */
+.skill-pulse-red{animation:sPulseRed 2.5s ease-in-out infinite}
+@keyframes sPulseRed{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.3)}50%{box-shadow:0 0 12px 4px rgba(239,68,68,0.5)}}
+
+/* slow-glow */
+.skill-slow-glow{animation:sSlowGlow 4s ease-in-out infinite}
+@keyframes sSlowGlow{0%,100%{opacity:.5;box-shadow:0 0 4px 0 rgba(255,255,255,0.1)}50%{opacity:1;box-shadow:0 0 16px 4px rgba(255,255,255,0.2)}}
+
+/* fade-in */
+.skill-fade-in{animation:sFadeIn 2s ease-out both;animation-delay:0.5s;opacity:0}
+@keyframes sFadeIn{to{opacity:1}}
+
+/* rise-gradual */
+.skill-rise-gradual{animation:sRiseGrad 3.5s ease-in-out infinite}
+@keyframes sRiseGrad{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(-4px);opacity:1}}
+
+/* ember */
+.skill-ember{animation:sEmber 3s ease-in-out infinite}
+@keyframes sEmber{0%,100%{color:#EF4444;opacity:.7}50%{color:#F97316;opacity:1}}
+
+/* ignite */
+.skill-ignite{animation:sIgnite 3s ease-out infinite;animation-delay:0.8s}
+@keyframes sIgnite{0%,100%{box-shadow:0 0 4px 0 rgba(239,68,68,0.2)}40%{box-shadow:0 0 18px 6px rgba(239,68,68,0.6)}}
+
+/* flare-reset */
+.skill-flare-reset{animation:sFlareReset 4s ease-in-out infinite}
+@keyframes sFlareReset{0%,100%{opacity:.6;transform:scale(1)}33%{opacity:1;transform:scale(1.08)}66%{opacity:.8;transform:scale(0.96)}}
+
+/* blink-soft */
+.skill-blink-soft{animation:sBlinkSoft 4s ease-in-out infinite}
+@keyframes sBlinkSoft{0%,90%,100%{opacity:.7}95%{opacity:1}}
+
+/* shift */
+.skill-shift{animation:sShift 3s ease-in-out infinite}
+@keyframes sShift{0%,100%{transform:translateX(0);border-color:rgba(168,85,247,0.2)}50%{transform:translateX(2px);border-color:rgba(168,85,247,0.5)}}
+
+/* fade-toggle */
+.skill-fade-toggle{animation:sFadeToggle 3s ease-in-out infinite}
+@keyframes sFadeToggle{0%,100%{opacity:.5}50%{opacity:1}}
+
+/* throb */
+.skill-throb{animation:sThrob 2.5s ease-in-out infinite}
+@keyframes sThrob{0%,100%{transform:scale(1)}30%{transform:scale(1.12)}60%{transform:scale(0.96)}}
+
+/* shake */
+.skill-shake{animation:sShake 2.5s ease-in-out infinite}
+@keyframes sShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-2px)}40%{transform:translateX(2px)}60%{transform:translateX(-1px)}80%{transform:translateX(1px)}}
+
+/* zoom-out */
+.skill-zoom-out{animation:sZoomOut 3.5s ease-out infinite}
+@keyframes sZoomOut{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.08);opacity:1}}
+
+/* tilt */
+.skill-tilt{animation:sTilt 3s ease-in-out infinite}
+@keyframes sTilt{0%,100%{transform:rotate(0deg)}50%{transform:rotate(3deg)}}
+
+/* fracture */
+.skill-fracture{animation:sFracture 4s ease-in-out infinite}
+@keyframes sFracture{0%,100%{opacity:.6;border-color:rgba(168,85,247,0.2)}50%{opacity:1;border-color:rgba(168,85,247,0.5)}}
+
+/* break */
+.skill-break{animation:sBreak 3.5s ease-in-out infinite}
+@keyframes sBreak{0%,100%{opacity:.7;transform:scale(1)}40%{opacity:1;transform:scale(1.06)}70%{opacity:.6;transform:scale(0.97)}}
+
+/* coil */
+.skill-coil{animation:sCoil 3s ease-in-out infinite}
+@keyframes sCoil{0%,100%{transform:scale(1);border-color:rgba(56,189,248,0.2)}50%{transform:scale(1.05);border-color:rgba(56,189,248,0.45)}}
+
+/* tighten */
+.skill-tighten{animation:sTighten 2.5s ease-in-out infinite}
+@keyframes sTighten{0%,100%{opacity:.7}50%{opacity:1;box-shadow:0 0 10px 2px rgba(56,189,248,0.3)}}
+
+/* release */
+.skill-release{animation:sRelease 4s ease-out infinite}
+@keyframes sRelease{0%{opacity:0;transform:scale(0.9)}40%{opacity:1;transform:scale(1.05)}100%{opacity:.7;transform:scale(1)}}
+
+/* pulse-blue */
+.skill-pulse-blue{animation:sPulseBlue 3s ease-in-out infinite}
+@keyframes sPulseBlue{0%,100%{box-shadow:0 0 0 0 rgba(14,165,233,0.3)}50%{box-shadow:0 0 12px 4px rgba(14,165,233,0.5)}}
+
+/* wave-chaos */
+.skill-wave-chaos{animation:sWaveChaos 3.5s ease-in-out infinite}
+@keyframes sWaveChaos{0%,100%{transform:scale(1);opacity:.6}33%{transform:scale(1.1) rotate(2deg);opacity:.9}66%{transform:scale(0.95) rotate(-1deg);opacity:.7}}
+
+/* settle */
+.skill-settle{animation:sSettle 4s ease-in-out infinite}
+@keyframes sSettle{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.05);opacity:1}}
+
+/* horizon */
+.skill-horizon{animation:sHorizon 5s ease-in-out infinite}
+@keyframes sHorizon{0%,100%{opacity:.5;box-shadow:0 0 0 0 rgba(52,211,153,0.2)}50%{opacity:1;box-shadow:0 0 16px 4px rgba(52,211,153,0.35)}}
+
+/* jump */
+.skill-jump{animation:sJump 2.5s ease-out infinite;animation-delay:0.5s}
+@keyframes sJump{0%,100%{transform:translateY(0)}30%{transform:translateY(-5px);opacity:1}}
+
+/* lift */
+.skill-lift{animation:sLift 4s ease-in-out infinite}
+@keyframes sLift{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(-4px);opacity:1}}
+
+/* outline */
+.skill-outline{animation:sOutline 3s ease-in-out infinite}
+@keyframes sOutline{0%,100%{border-color:rgba(110,231,183,0.2)}50%{border-color:rgba(110,231,183,0.5)}}
+
+/* scale */
+.skill-scale{animation:sScale 3s ease-in-out infinite}
+@keyframes sScale{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+/* reframe */
+.skill-reframe{animation:sReframe 4s ease-in-out infinite}
+@keyframes sReframe{0%,100%{opacity:.7;transform:rotate(0deg)}50%{opacity:1;transform:rotate(2deg)}}
+
+/* default fallback */
+.skill-default{animation:sDefault 3s ease-in-out infinite}
+@keyframes sDefault{0%,100%{opacity:.6}50%{opacity:1}}
