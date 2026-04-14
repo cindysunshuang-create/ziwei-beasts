@@ -714,9 +714,27 @@ function RevealAnimation({ beast, onDone }: { beast: typeof BEASTS[number]; onDo
 // Guardian Reveal Page
 function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiChart; onBind: () => void; onClose?: () => void; onBack?: () => void }) {
   const beast = BEASTS[chart.guardianBeastId - 1]
-  const [tab, setTab] = useState<'myth' | 'narrative' | 'chart' | 'powers'>('myth')
   const [v, setV] = useState(false)
   useEffect(() => { const t = setTimeout(() => setV(true), 100); return () => clearTimeout(t) }, [])
+
+  const sections = [
+    { key: 'opening',       title: 'The Encounter',       icon: '◈' },
+    { key: 'coreNature',    title: 'Your Nature',          icon: '◇' },
+    { key: 'lifePattern',   title: 'Your Pattern',         icon: '◉' },
+    { key: 'innerConflict', title: 'The Hidden Wound',     icon: '◈' },
+    { key: 'guidance',      title: 'The Invitation',       icon: '✦' },
+  ] as const
+
+  const chartItems = [
+    { l: 'Ming Palace',    v: chart.mingPalace },
+    { l: 'Year Branch',    v: chart.calculationDetails.yearlyBranch },
+    { l: 'Month Branch',   v: chart.calculationDetails.monthlyBranch },
+    { l: 'Hour Branch',    v: chart.calculationDetails.hourlyBranch },
+    { l: 'Year Stem',       v: chart.calculationDetails.yearlyStem },
+    { l: 'Lunar Date',     v: `${chart.lunarYear}/${chart.lunarMonth}/${chart.lunarDay}` },
+    { l: 'Personality',    v: chart.personalityType },
+  ]
+
   return (
     <div className="page guardian-page" style={{ opacity: v ? 1 : 0, transition: 'opacity 0.7s' }}>
       <Stars />
@@ -727,6 +745,8 @@ function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiCh
         </button>
       )}
       <div className="guardian-content">
+
+        {/* ── Header ── */}
         <div className="eyebrow">✦ YOUR GUARDIAN REVEALED ✦</div>
         <div className="guardian-hdr">
           <div className="guardian-icon-wrap">
@@ -734,74 +754,65 @@ function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiCh
             <img src={beast.icon} alt={beast.name} className="guardian-icon" />
           </div>
           <div>
-            <div className="guardian-name">{beast.name}</div>
+            <div className="guardian-name">{beast.name} <span style={{ fontSize: '1.2rem', opacity: 0.7 }}>{beast.cnName}</span></div>
             <div className="guardian-meta" style={{ color: beast.color }}>{beast.zodiac} · {beast.branch} · {beast.palace}</div>
-            <div className="guardian-tagline">{beast.tagline}</div>
-            <div className="guardian-tags-row">
+            <div className="guardian-tagline">"{beast.tagline}"</div>
+            <div className="guardian-tags-row" style={{ marginTop: '0.5rem' }}>
               <span className="guardian-tag-badge" style={{ color: beast.color, borderColor: `${beast.color}40` }}>{beast.element}</span>
               <span className="guardian-tag-badge" style={{ color: beast.color, borderColor: `${beast.color}40` }}>{chart.personalityType}</span>
             </div>
           </div>
         </div>
-        <div className="guardian-tabs-row">
-          {(['myth', 'narrative', 'chart', 'powers'] as const).map(tid => (
-            <button key={tid} className={`guardian-tab ${tab === tid ? 'active' : ''}`} onClick={() => setTab(tid)}>
-              {tid === 'myth' ? 'Mythology' : tid === 'narrative' ? 'Your Arc' : tid === 'chart' ? 'Chart' : 'Powers'}
-            </button>
+
+        {/* ── Mythology ── */}
+        <div className="guardian-section guardian-myth-block">
+          <div className="guardian-section-label" style={{ fontSize: '0.65rem', letterSpacing: '0.2em', color: beast.color, textTransform: 'uppercase', marginBottom: '0.5rem' }}>Origin & Mythology</div>
+          <p className="guardian-section-text" style={{ fontSize: '1.05rem', lineHeight: 1.8 }}>{beast.desc}</p>
+        </div>
+
+        {/* ── Full Narrative ── */}
+        <div className="guardian-section">
+          <div className="guardian-section-label" style={{ fontSize: '0.65rem', letterSpacing: '0.2em', color: beast.color, textTransform: 'uppercase', marginBottom: '1.2rem' }}>Your Arc · The Complete Journey</div>
+          {sections.map((s, i) => (
+            <div key={s.key} className="narrative-arc-block" style={{ animationDelay: `${i * 0.5}s` }}>
+              <div className="narrative-arc-icon" style={{ color: beast.color, opacity: 0.8 }}>{s.icon}</div>
+              <div>
+                <div className="narrative-arc-title">{s.title}</div>
+                <p className="narrative-arc-text">{beast.narrative[s.key]}</p>
+              </div>
+            </div>
           ))}
         </div>
-        <div className="guardian-body">
-          {tab === 'myth' && (
-            <div className="guardian-section">
-              <h3 className="guardian-section-title">Origin & Mythology</h3>
-              <p className="guardian-section-text">{beast.desc}</p>
-              <div className="guardian-quote">"{beast.tagline}" — The Shanhaijing</div>
-            </div>
-          )}
-          {tab === 'narrative' && (
-            <div className="guardian-section">
-              <GuardianNarrative guardian={beast} />
-            </div>
-          )}
-          {tab === 'powers' && (
-            <div className="guardian-section">
-              <GuardianSkills guardian={beast} />
-            </div>
-          )}
-          {tab === 'chart' && (
-            <div className="guardian-section">
-              <h3 className="guardian-section-title">Your Chart Summary</h3>
-              <div className="guardian-chart-grid">
-                {[
-                  { l: 'Ming Palace', v: chart.mingPalace },
-                  { l: 'Year Branch', v: chart.calculationDetails.yearlyBranch },
-                  { l: 'Month Branch', v: chart.calculationDetails.monthlyBranch },
-                  { l: 'Hour Branch', v: chart.calculationDetails.hourlyBranch },
-                  { l: 'Year Stem', v: chart.calculationDetails.yearlyStem },
-                  { l: 'Guardian', v: `${beast.name} (${beast.branch})` },
-                  { l: 'Lunar Date', v: `${chart.lunarYear}/${chart.lunarMonth}/${chart.lunarDay}` },
-                ].map((item, i) => (
-                  <div key={i} className="guardian-chart-item" style={{ borderColor: `${beast.color}20` }}>
-                    <div className="guardian-chart-label">{item.l}</div>
-                    <div className="guardian-chart-value" style={{ color: beast.color }}>{item.v}</div>
-                  </div>
-                ))}
+
+        {/* ── Skills ── */}
+        <GuardianSkills guardian={beast} />
+
+        {/* ── Chart Summary ── */}
+        <div className="guardian-section">
+          <div className="guardian-section-label" style={{ fontSize: '0.65rem', letterSpacing: '0.2em', color: beast.color, textTransform: 'uppercase', marginBottom: '1rem' }}>Your Chart Data</div>
+          <div className="guardian-chart-grid">
+            {chartItems.map((item, i) => (
+              <div key={i} className="guardian-chart-item" style={{ borderColor: `${beast.color}20` }}>
+                <div className="guardian-chart-label">{item.l}</div>
+                <div className="guardian-chart-value" style={{ color: beast.color, fontSize: '0.9rem' }}>{item.v}</div>
               </div>
-              <div className="guardian-trans">
-                <div className="guardian-trans-label">Four Transformations</div>
-                <div className="guardian-trans-items">
-                  {Object.entries(chart.fourTransformations).map(([k, v]) => (
-                    <span key={k} className="guardian-trans-badge" style={{ color: beast.color, borderColor: `${beast.color}35` }}>
-                      {k}: {v}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '1rem' }}>
+            <div style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: beast.color, opacity: 0.7, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Four Transformations</div>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              {Object.entries(chart.fourTransformations).map(([k, val]) => (
+                <span key={k} style={{ color: beast.color, border: `1px solid ${beast.color}30`, borderRadius: '20px', padding: '3px 10px', fontSize: '0.78rem' }}>
+                  {k} <span style={{ opacity: 0.7 }}>{val}</span>
+                </span>
+              ))}
             </div>
-          )}
+          </div>
         </div>
+
+        {/* ── CTA ── */}
         <div className="guardian-cta">
-          <button className="btn btn-primary btn-full" onClick={onBind} style={{ marginBottom: "0.5rem" }}>Bind Identity & Save →</button>
+          <button className="btn btn-primary btn-full" onClick={onBind} style={{ marginBottom: '0.5rem' }}>Bind Identity & Save →</button>
           {onBack && <button className="btn btn-ghost btn-full" onClick={onBack}>← Back</button>}
           <p className="guardian-cta-note">Save to access anytime · No account required</p>
         </div>
