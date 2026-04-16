@@ -659,7 +659,7 @@ function RevealAnimation({ beast, onDone }: { beast: typeof BEASTS[number]; onDo
   }, [])
   const q = quotes[phase - 1] ?? quotes[0]
   return (
-    <div className="reveal-overlay">
+    <div className="reveal-anim-overlay">
       <Stars />
       <button className="reveal-close" onClick={onDone} aria-label="Skip">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3 L15 15 M15 3 L3 15" stroke="rgba(237,232,245,0.5)" strokeWidth="1.5" strokeLinecap="round"/></svg>
