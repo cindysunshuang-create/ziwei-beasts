@@ -9,7 +9,8 @@ body {
 #root {
   min-height: 100vh;
 }
-/* GuardianRevealPage header elements */
+
+/* GuardianRevealPage - Missing styles for narrative arc, chart data, header */
 .guardian-name {
   font-family: var(--f-display);
   color: var(--text);
@@ -37,13 +38,6 @@ body {
   padding: .2rem .6rem;
   font-size: .65rem;
 }
-.guardian-tags-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .4rem;
-}
-
-/* GuardianRevealPage section elements */
 .guardian-section-label {
   font-family: var(--f-ui);
   letter-spacing: .2em;
@@ -65,8 +59,6 @@ body {
   margin-bottom: 2.5rem;
   padding: 1.5rem;
 }
-
-/* Chart data grid */
 .guardian-chart-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -93,12 +85,36 @@ body {
   font-size: .85rem;
   font-weight: 500;
 }
+.guardian-cta-note {
+  font-family: var(--f-ui);
+  color: var(--text-dim);
+  letter-spacing: .06em;
+  margin-top: .75rem;
+  font-size: .7rem;
+}
 
-/* Narrative Arc */
+/* GuardianSkills component */
+.guardian-skills-label {
+  font-family: var(--f-ui);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+  font-size: .62rem;
+}
+.guardian-skills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+/* GuardianRevealPage animation for sections */
 .guardian-section {
   margin-bottom: 2.5rem;
   animation: 2s ease-in-out .6s both fadeUp;
 }
+
+/* Narrative arc block */
 .narrative-arc-block {
   display: flex;
   align-items: flex-start;
@@ -136,31 +152,14 @@ body {
   line-height: 1.9;
 }
 
-/* Guardian Skills */
-.guardian-skills-label {
-  font-family: var(--f-ui);
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 1rem;
-  font-size: .62rem;
-}
-.guardian-skills-grid {
-  display: flex;
-  flex-direction: column;
-  gap: .75rem;
-}
-
-/* CTA note */
-.guardian-cta-note {
-  font-family: var(--f-ui);
-  color: var(--text-dim);
-  letter-spacing: .06em;
-  margin-top: .75rem;
-  font-size: .7rem;
-}
-
-/* Guardian page root */
+/* Guardian page fix: .guardian-page needs display */
 .guardian-page {
   animation: 2.5s ease-in-out both fadeUp;
+}
+
+/* Guardian page header section - GuardianRevealPage */
+.guardian-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
 }
