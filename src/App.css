@@ -316,7 +316,7 @@ body{background:var(--cosmic);color:var(--text);font-family:var(--f-body);line-h
    GUARDIAN SKILLS
    Three-skill display: Passive / Triggered / Cyclic
    ═══════════════════════════════════════════════════════ */
-/* Guardian Reveal page — section wrappers */
+/* Guardian Reveal page — section wrappers - v2 */
 .guardian-section{display:flex;flex-direction:column;gap:2rem;margin-bottom:2rem}
 .guardian-tags-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
 .guardian-tag-badge{font-family:var(--f-ui);letter-spacing:.06em;border:1px solid;border-radius:100px;padding:.2rem .6rem;font-size:.65rem}
