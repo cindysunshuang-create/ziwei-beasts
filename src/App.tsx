@@ -929,7 +929,7 @@ export default function App() {
       {journey === 'input' && <><Nav stepBack={() => setJourney('rules')} /><InputPage onSubmit={handleFormSubmit} onBack={() => setJourney('rules')} /></>}
       {journey === 'calculating' && <><Nav stepBack={() => { setJourney('input') }} /><CalculatingPage name={formData?.name || 'Your'} onCancel={() => setJourney('input')} /></>}
       {journey === 'profile' && chart && (
-        <ProfileRevealPage chart={chart} onDiscover={() => setModal('silhouette')} onClose={resetAll} onBack={() => setJourney('input')} />
+        <ProfileRevealPage chart={chart} onDiscover={() => setModal('reveal')} onClose={resetAll} onBack={() => setJourney('input')} />
       )}
       {modal === 'silhouette' && (
         <SilhouetteModal beast={beast} onClose={closeModal} onUnlock={() => setModal('revealing')} />
