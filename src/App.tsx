@@ -527,7 +527,7 @@ function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: Ziwe
         {/* CTA */}
         <div className="reveal-cta">
           <button className="btn btn-primary btn-full" onClick={onDiscover}>
-            Unlock Full Reading — $1.99
+            Unlock Full Reading — $1.99 USD
           </button>
           {onBack && <button className="btn btn-ghost btn-full" onClick={onBack}>← Calculate Another</button>}
         </div>
@@ -575,7 +575,7 @@ function SilhouetteModal({ beast, onClose, onUnlock }: { beast: typeof BEASTS[nu
         {phase >= 2 && (
           <div className="sil-desc">
             <p>Your Guardian is <strong style={{ color: beast.color }}>{beast.name}</strong> — divine protector of the <strong>{beast.palace}</strong>.</p>
-            <button className="btn btn-primary btn-full" onClick={onUnlock}>Unlock Full Reading — $1.99 →</button>
+            <button className="btn btn-primary btn-full" onClick={onUnlock}>Unlock Full Reading — $1.99 USD →</button>
             <p className="sil-note">Instant access · No subscription</p>
           </div>
         )}
