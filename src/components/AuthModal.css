@@ -107,27 +107,21 @@
 
 .auth-btn:disabled { opacity: 0.6; cursor: not-allowed }
 
-.auth-btn-google {
+.auth-btn-social {
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.15);
   color: #fff;
 }
 
-.auth-btn-google:hover:not(:disabled) {
+.auth-btn-social:hover:not(:disabled) {
   background: rgba(255,255,255,0.13);
   border-color: rgba(255,255,255,0.25);
 }
 
-.auth-btn-email {
-  background: transparent;
-  border: 1px solid rgba(201, 148, 58, 0.3);
-  color: rgba(201, 148, 58, 0.8);
-}
-
-.auth-btn-email:hover:not(:disabled) {
-  background: rgba(201, 148, 58, 0.08);
-  border-color: rgba(201, 148, 58, 0.5);
-  color: #C9943A;
+.auth-social-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .auth-btn-primary {

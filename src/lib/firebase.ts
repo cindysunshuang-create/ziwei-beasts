@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app'
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: "AIzaSyA4GLwzSozSQCdJAI1VshUv0GSSetrs8eg",
@@ -15,8 +15,10 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 
 export const auth = getAuth(app)
 export const googleProvider = new GoogleAuthProvider()
+export const appleProvider = new OAuthProvider('apple.com')
 
 export const signInWithGoogle = () => signInWithPopup(auth, googleProvider)
+export const signInWithApple = () => signInWithPopup(auth, appleProvider)
 
 export const signUpWithEmail = (email: string, password: string) =>
   createUserWithEmailAndPassword(auth, email, password)
