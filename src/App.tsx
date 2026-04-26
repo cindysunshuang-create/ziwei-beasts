@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import { AuthModal } from './components/AuthModal'
 import { GuardianNarrative } from './components/GuardianNarrative'
+import { GuardianSkills } from './components/GuardianSkills'
 import { useAuth } from './contexts/AuthContext'
 import { logOut } from './lib/firebase'
 import { calculateZiweiChart } from './engine/ziweiCalculator'
@@ -526,7 +527,7 @@ function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: Ziwe
         {/* CTA */}
         <div className="reveal-cta">
           <button className="btn btn-primary btn-full" onClick={onDiscover}>
-            Unlock Full Reading — $1.99 USD
+            Unlock Full Reading — $1.99
           </button>
           {onBack && <button className="btn btn-ghost btn-full" onClick={onBack}>← Calculate Another</button>}
         </div>
@@ -574,7 +575,7 @@ function SilhouetteModal({ beast, onClose, onUnlock }: { beast: typeof BEASTS[nu
         {phase >= 2 && (
           <div className="sil-desc">
             <p>Your Guardian is <strong style={{ color: beast.color }}>{beast.name}</strong> — divine protector of the <strong>{beast.palace}</strong>.</p>
-            <button className="btn btn-primary btn-full" onClick={onUnlock}>Unlock Full Reading — $1.99 USD →</button>
+            <button className="btn btn-primary btn-full" onClick={onUnlock}>Unlock Full Reading — $1.99 →</button>
             <p className="sil-note">Instant access · No subscription</p>
           </div>
         )}
@@ -658,7 +659,7 @@ function RevealAnimation({ beast, onDone }: { beast: typeof BEASTS[number]; onDo
   }, [])
   const q = quotes[phase - 1] ?? quotes[0]
   return (
-    <div className="reveal-anim-overlay">
+    <div className="reveal-overlay">
       <Stars />
       <button className="reveal-close" onClick={onDone} aria-label="Skip">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3 L15 15 M15 3 L3 15" stroke="rgba(237,232,245,0.5)" strokeWidth="1.5" strokeLinecap="round"/></svg>
@@ -716,14 +717,6 @@ function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiCh
   const [v, setV] = useState(false)
   useEffect(() => { const t = setTimeout(() => setV(true), 100); return () => clearTimeout(t) }, [])
 
-  const sections = [
-    { key: 'opening',       title: 'The Encounter',       icon: '◈' },
-    { key: 'coreNature',    title: 'Your Nature',          icon: '◇' },
-    { key: 'lifePattern',   title: 'Your Pattern',         icon: '◉' },
-    { key: 'innerConflict', title: 'The Hidden Wound',     icon: '◈' },
-    { key: 'guidance',      title: 'The Invitation',       icon: '✦' },
-  ] as const
-
   const chartItems = [
     { l: 'Ming Palace',    v: chart.mingPalace },
     { l: 'Year Branch',    v: chart.calculationDetails.yearlyBranch },
@@ -770,18 +763,7 @@ function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiCh
         </div>
 
         {/* ── Full Narrative ── */}
-        <div className="guardian-section">
-          <div className="guardian-section-label" style={{ fontSize: '0.65rem', letterSpacing: '0.2em', color: beast.color, textTransform: 'uppercase', marginBottom: '1.2rem' }}>Your Arc · The Complete Journey</div>
-          {sections.map((s, i) => (
-            <div key={s.key} className="narrative-arc-block" style={{ animationDelay: `${i * 0.5}s` }}>
-              <div className="narrative-arc-icon" style={{ color: beast.color, opacity: 0.8 }}>{s.icon}</div>
-              <div>
-                <div className="narrative-arc-title">{s.title}</div>
-                <p className="narrative-arc-text">{beast.narrative[s.key]}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <GuardianNarrative guardian={beast} />
 
         {/* ── Skills ── */}
         <GuardianSkills guardian={beast} />
@@ -927,11 +909,11 @@ export default function App() {
       {journey === 'rules' && <><Nav stepBack={() => setJourney('world-intro')} /><RulesPage onNext={() => setJourney('input')} onBack={() => setJourney('world-intro')} /></>}
       {journey === 'input' && <><Nav stepBack={() => setJourney('rules')} /><InputPage onSubmit={handleFormSubmit} onBack={() => setJourney('rules')} /></>}
       {journey === 'calculating' && <><Nav stepBack={() => { setJourney('input') }} /><CalculatingPage name={formData?.name || 'Your'} onCancel={() => setJourney('input')} /></>}
-      {journey === 'profile' && chart && (
+      {journey === 'profile' && chart && !modal && (
         <ProfileRevealPage chart={chart} onDiscover={() => setModal('reveal')} onClose={resetAll} onBack={() => setJourney('input')} />
       )}
       {modal === 'silhouette' && (
-        <SilhouetteModal beast={beast} onClose={closeModal} onUnlock={() => setModal('revealing')} />
+        <SilhouetteModal beast={beast} onClose={closeModal} onUnlock={() => setModal('reveal')} />
       )}
       {modal === 'revealing' && (
         <RevealAnimation beast={beast} onDone={() => setModal('reveal')} />

@@ -43,7 +43,12 @@ export function GuardianSkills({ guardian }: Props) {
   const triggered = skillById(triggeredId)
   const cyclic    = skillById(cyclicId)
 
-  if (!passive || !triggered || !cyclic) return null
+  console.log('[GuardianSkills] guardian:', guardian.name, 'skills:', guardian.skills)
+  console.log('[GuardianSkills] passiveId:', passiveId, '-> skill:', passive?.name, '| triggeredId:', triggeredId, '-> skill:', triggered?.name, '| cyclicId:', cyclicId, '-> skill:', cyclic?.name)
+  if (!passive || !triggered || !cyclic) {
+    console.warn('[GuardianSkills] SKIP RENDER — missing skills, passive:', !!passive, 'triggered:', !!triggered, 'cyclic:', !!cyclic)
+    return null
+  }
 
   return (
     <div className="guardian-skills-section">

@@ -1,0 +1,10 @@
+name: ziwei-beasts
+static_sites:
+  - name: ziwei-beasts-web
+    build_command: npm install && npm run build
+    output_dir: dist
+    catchall_document: index.html
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: cindysunshuang-create/ziwei-beasts
