@@ -46,8 +46,8 @@ function Nav({ onHome, stepBack }: { onHome?: () => void; stepBack?: () => void 
     <nav className="nav">
       {stepBack ? (
         <button className="nav-back" onClick={stepBack}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2 L4 7 L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          Back
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          Home
         </button>
       ) : (
         <button className="nav-logo-btn" onClick={onHome}>
@@ -532,30 +532,12 @@ function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: Ziwe
         {/* CTA */}
         <div className="reveal-cta">
           <div className="reveal-cta-group">
-            <a
-              className="btn btn-primary btn-full gumroad-button"
-              href="https://gumroad.com/l/your-product-id"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-gumroad-single-product="true"
+            <button
+              className="btn btn-primary btn-full"
+              onClick={onDiscover}
             >
-              Unlock Personality Analysis — $1.99 USD
-            </a>
-            <a
-              className="btn btn-crypto btn-full"
-              href="https://nowpayments.io/pay/your-crypto-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ marginRight: '0.4rem' }}>
-                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M8 8.5H14.5C15.8807 8.5 17 9.61929 17 11C17 12.3807 15.8807 13.5 14.5 13.5H8V8.5Z" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M8 13.5H15.5C16.8807 13.5 18 14.6193 18 16C18 17.3807 16.8807 18.5 15.5 18.5H8V13.5Z" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M11 6V20" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M14 6V20" stroke="currentColor" strokeWidth="1.5"/>
-              </svg>
-              Pay with Crypto (BTC/ETH)
-            </a>
+              Unlock Personality Analysis (Skip Payment)
+            </button>
           </div>
           {onBack && <button className="btn btn-ghost btn-full" onClick={onBack}>← Calculate Another</button>}
         </div>
@@ -604,30 +586,12 @@ function SilhouetteModal({ beast, onClose, onUnlock }: { beast: typeof BEASTS[nu
           <div className="sil-desc">
             <p>Your Guardian is <strong style={{ color: beast.color }}>{beast.name}</strong> — divine protector of the <strong>{beast.palace}</strong>.</p>
             <div className="reveal-cta-group">
-              <a
-                className="btn btn-primary btn-full gumroad-button"
-                href="https://gumroad.com/l/your-product-id"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-gumroad-single-product="true"
+              <button
+                className="btn btn-primary btn-full"
+                onClick={onUnlock}
               >
-                Unlock Digital Assessment — $1.99 USD →
-              </a>
-              <a
-                className="btn btn-crypto btn-full"
-                href="https://nowpayments.io/pay/your-crypto-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ marginRight: '0.4rem' }}>
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M8 8.5H14.5C15.8807 8.5 17 9.61929 17 11C17 12.3807 15.8807 13.5 14.5 13.5H8V8.5Z" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M8 13.5H15.5C16.8807 13.5 18 14.6193 18 16C18 17.3807 16.8807 18.5 15.5 18.5H8V13.5Z" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M11 6V20" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M14 6V20" stroke="currentColor" strokeWidth="1.5"/>
-                </svg>
-                Pay with Crypto
-              </a>
+                Unlock Digital Assessment (Skip Payment) →
+              </button>
             </div>
             <p className="sil-note">Instant access · No subscription</p>
           </div>
@@ -770,6 +734,24 @@ function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiCh
   const [v, setV] = useState(false)
   useEffect(() => { const t = setTimeout(() => setV(true), 100); return () => clearTimeout(t) }, [])
 
+  const handleSaveImage = async () => {
+    try {
+      const response = await fetch(beast.icon)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = url
+      a.download = `Guardian_${beast.name.replace(/\s+/g, '_')}.png`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (err) {
+      console.error('Failed to save image', err)
+    }
+  }
+
   const chartItems = [
     { l: 'Ming Palace',    v: chart.mingPalace },
     { l: 'Year Branch',    v: chart.calculationDetails.yearlyBranch },
@@ -794,9 +776,21 @@ function GuardianRevealPage({ chart, onBind, onClose, onBack }: { chart: ZiweiCh
         {/* ── Header ── */}
         <div className="eyebrow">✦ YOUR GUARDIAN REVEALED ✦</div>
         <div className="guardian-hdr">
-          <div className="guardian-icon-wrap">
+          <div className="guardian-icon-wrap" style={{ position: 'relative' }}>
             <div className="guardian-icon-glow" style={{ boxShadow: `0 0 50px 10px ${beast.glowColor}` }} />
             <img src={beast.icon} alt={beast.name} className="guardian-icon" />
+            <button 
+              onClick={handleSaveImage}
+              className="guardian-save-btn"
+              title="Save Image"
+              aria-label="Save Guardian Image"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </button>
           </div>
           <div>
             <div className="guardian-name">{beast.name} <span style={{ fontSize: '1.2rem', opacity: 0.7 }}>{beast.cnName}</span></div>
@@ -959,9 +953,9 @@ export default function App() {
       </button>
       {journey === 'hero' && <HeroPage onBegin={() => setJourney('world-intro')} onSignIn={() => setAuthModal(true)} user={user} onSignOut={() => logOut()} />}
       {journey === 'world-intro' && <><Nav stepBack={resetAll} /><WorldIntroPage onNext={() => setJourney('rules')} onBack={resetAll} /></>}
-      {journey === 'rules' && <><Nav stepBack={() => setJourney('world-intro')} /><RulesPage onNext={() => setJourney('input')} onBack={() => setJourney('world-intro')} /></>}
-      {journey === 'input' && <><Nav stepBack={() => setJourney('rules')} /><InputPage onSubmit={handleFormSubmit} onBack={() => setJourney('rules')} /></>}
-      {journey === 'calculating' && <><Nav stepBack={() => { setJourney('input') }} /><CalculatingPage name={formData?.name || 'Your'} onCancel={() => setJourney('input')} /></>}
+      {journey === 'rules' && <><Nav stepBack={resetAll} /><RulesPage onNext={() => setJourney('input')} onBack={() => setJourney('world-intro')} /></>}
+      {journey === 'input' && <><Nav stepBack={resetAll} /><InputPage onSubmit={handleFormSubmit} onBack={() => setJourney('rules')} /></>}
+      {journey === 'calculating' && <><Nav stepBack={resetAll} /><CalculatingPage name={formData?.name || 'Your'} onCancel={() => setJourney('input')} /></>}
       {journey === 'profile' && chart && !modal && (
         <ProfileRevealPage chart={chart} onDiscover={() => setModal('reveal')} onClose={resetAll} onBack={() => setJourney('input')} />
       )}
@@ -977,10 +971,10 @@ export default function App() {
       {journey === 'bind' && chart && (
         <BindPage chart={chart} onComplete={resetAll} onClose={resetAll} />
       )}
-      {journey === 'terms' && <><Nav stepBack={() => setJourney('hero')} /><TermsOfService onBack={() => setJourney('hero')} /></>}
-      {journey === 'privacy' && <><Nav stepBack={() => setJourney('hero')} /><PrivacyPolicy onBack={() => setJourney('hero')} /></>}
-      {journey === 'refund' && <><Nav stepBack={() => setJourney('hero')} /><RefundPolicy onBack={() => setJourney('hero')} /></>}
-      {journey === 'contact' && <><Nav stepBack={() => setJourney('hero')} /><ContactUs onBack={() => setJourney('hero')} /></>}
+      {journey === 'terms' && <><Nav stepBack={resetAll} /><TermsOfService onBack={resetAll} /></>}
+      {journey === 'privacy' && <><Nav stepBack={resetAll} /><PrivacyPolicy onBack={resetAll} /></>}
+      {journey === 'refund' && <><Nav stepBack={resetAll} /><RefundPolicy onBack={resetAll} /></>}
+      {journey === 'contact' && <><Nav stepBack={resetAll} /><ContactUs onBack={resetAll} /></>}
 
       {/* Footer */}
       {!['calculating', 'terms', 'privacy', 'refund', 'contact'].includes(journey) && !modal && (

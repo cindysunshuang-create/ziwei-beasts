@@ -204,6 +204,28 @@ body{background:var(--cosmic);color:var(--text);font-family:var(--f-body);line-h
 .guardian-icon-wrap{position:relative;flex-shrink:0}
 .guardian-ig{position:absolute;inset:-8px;border-radius:50%}
 .guardian-icon{width:120px;height:120px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.15);position:relative;z-index:1}
+.guardian-save-btn{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  background: rgba(6, 4, 18, 0.8);
+  border: 1px solid rgba(201, 148, 58, 0.4);
+  color: #C9943A;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.guardian-save-btn:hover {
+  background: rgba(201, 148, 58, 0.2);
+  color: #fff;
+  transform: scale(1.1);
+}
 .guardian-bname{font-family:var(--f-display);font-size:2rem;color:var(--text);letter-spacing:0.06em;margin-bottom:0.25rem}
 .guardian-bmeta{font-family:var(--f-ui);font-size:0.78rem;letter-spacing:0.1em;margin-bottom:0.3rem}
 .guardian-btag{font-family:var(--f-ui);font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem}
