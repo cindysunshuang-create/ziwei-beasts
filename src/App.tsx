@@ -3,6 +3,11 @@ import './App.css'
 import { AuthModal } from './components/AuthModal'
 import { GuardianNarrative } from './components/GuardianNarrative'
 import { GuardianSkills } from './components/GuardianSkills'
+import { Footer } from './components/Footer'
+import { TermsOfService } from './components/Legal/TermsOfService'
+import { PrivacyPolicy } from './components/Legal/PrivacyPolicy'
+import { RefundPolicy } from './components/Legal/RefundPolicy'
+import { ContactUs } from './components/Legal/ContactUs'
 import { useAuth } from './contexts/AuthContext'
 import { logOut } from './lib/firebase'
 import { calculateZiweiChart } from './engine/ziweiCalculator'
@@ -10,7 +15,7 @@ import type { ZiweiChart } from './engine/ziweiCalculator'
 import guardiansData from './data/guardians.json'
 import type { Guardian } from './types/guardians'
 
-type JourneyStep = 'hero' | 'world-intro' | 'rules' | 'input' | 'calculating' | 'profile' | 'bind'
+type JourneyStep = 'hero' | 'world-intro' | 'rules' | 'input' | 'calculating' | 'profile' | 'bind' | 'terms' | 'privacy' | 'refund' | 'contact'
 type ModalStep = 'silhouette' | 'revealing' | 'reveal' | null
 
 const BEASTS = guardiansData as unknown as readonly Guardian[]
@@ -526,9 +531,32 @@ function ProfileRevealPage({ chart, onDiscover, onClose, onBack }: { chart: Ziwe
 
         {/* CTA */}
         <div className="reveal-cta">
-          <button className="btn btn-primary btn-full" onClick={onDiscover}>
-            Unlock Full Reading — $1.99
-          </button>
+          <div className="reveal-cta-group">
+            <a
+              className="btn btn-primary btn-full gumroad-button"
+              href="https://gumroad.com/l/your-product-id"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-gumroad-single-product="true"
+            >
+              Unlock Personality Analysis — $1.99 USD
+            </a>
+            <a
+              className="btn btn-crypto btn-full"
+              href="https://nowpayments.io/pay/your-crypto-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ marginRight: '0.4rem' }}>
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M8 8.5H14.5C15.8807 8.5 17 9.61929 17 11C17 12.3807 15.8807 13.5 14.5 13.5H8V8.5Z" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M8 13.5H15.5C16.8807 13.5 18 14.6193 18 16C18 17.3807 16.8807 18.5 15.5 18.5H8V13.5Z" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M11 6V20" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M14 6V20" stroke="currentColor" strokeWidth="1.5"/>
+              </svg>
+              Pay with Crypto (BTC/ETH)
+            </a>
+          </div>
           {onBack && <button className="btn btn-ghost btn-full" onClick={onBack}>← Calculate Another</button>}
         </div>
       </div>
@@ -575,7 +603,32 @@ function SilhouetteModal({ beast, onClose, onUnlock }: { beast: typeof BEASTS[nu
         {phase >= 2 && (
           <div className="sil-desc">
             <p>Your Guardian is <strong style={{ color: beast.color }}>{beast.name}</strong> — divine protector of the <strong>{beast.palace}</strong>.</p>
-            <button className="btn btn-primary btn-full" onClick={onUnlock}>Unlock Full Reading — $1.99 →</button>
+            <div className="reveal-cta-group">
+              <a
+                className="btn btn-primary btn-full gumroad-button"
+                href="https://gumroad.com/l/your-product-id"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-gumroad-single-product="true"
+              >
+                Unlock Digital Assessment — $1.99 USD →
+              </a>
+              <a
+                className="btn btn-crypto btn-full"
+                href="https://nowpayments.io/pay/your-crypto-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ marginRight: '0.4rem' }}>
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M8 8.5H14.5C15.8807 8.5 17 9.61929 17 11C17 12.3807 15.8807 13.5 14.5 13.5H8V8.5Z" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M8 13.5H15.5C16.8807 13.5 18 14.6193 18 16C18 17.3807 16.8807 18.5 15.5 18.5H8V13.5Z" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M11 6V20" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M14 6V20" stroke="currentColor" strokeWidth="1.5"/>
+                </svg>
+                Pay with Crypto
+              </a>
+            </div>
             <p className="sil-note">Instant access · No subscription</p>
           </div>
         )}
@@ -924,6 +977,21 @@ export default function App() {
       {journey === 'bind' && chart && (
         <BindPage chart={chart} onComplete={resetAll} onClose={resetAll} />
       )}
+      {journey === 'terms' && <><Nav stepBack={() => setJourney('hero')} /><TermsOfService onBack={() => setJourney('hero')} /></>}
+      {journey === 'privacy' && <><Nav stepBack={() => setJourney('hero')} /><PrivacyPolicy onBack={() => setJourney('hero')} /></>}
+      {journey === 'refund' && <><Nav stepBack={() => setJourney('hero')} /><RefundPolicy onBack={() => setJourney('hero')} /></>}
+      {journey === 'contact' && <><Nav stepBack={() => setJourney('hero')} /><ContactUs onBack={() => setJourney('hero')} /></>}
+
+      {/* Footer */}
+      {!['calculating', 'terms', 'privacy', 'refund', 'contact'].includes(journey) && !modal && (
+        <Footer
+          onTerms={() => setJourney('terms')}
+          onPrivacy={() => setJourney('privacy')}
+          onRefund={() => setJourney('refund')}
+          onContact={() => setJourney('contact')}
+        />
+      )}
+
       {authModal && (
         <AuthModal
           onClose={() => setAuthModal(false)}

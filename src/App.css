@@ -296,8 +296,28 @@ body{background:var(--cosmic);color:var(--text);font-family:var(--f-body);line-h
 .reveal-pillars-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
 .reveal-pillar-item{background:rgba(255,255,255,0.03);border:1px solid rgba(201,148,58,0.1);border-radius:8px;padding:0.6rem 0.75rem;display:flex;flex-direction:column;gap:3px}
 .reveal-pillar-key{font-family:var(--f-ui);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim)}
-.reveal-pillar-val{font-family:var(--f-display);font-size:0.9rem;letter-spacing:0.06em}
-.reveal-cta{display:flex;flex-direction:column;gap:0.6rem}
+.reveal-cta {
+  display: flex;
+  flex-direction: column;
+}
+.reveal-cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.btn-crypto {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(237, 232, 245, 0.7);
+}
+
+.btn-crypto:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
 .hero-signin-btn{background:none;border:1px solid rgba(201,148,58,0.25);color:rgba(201,148,58,0.55);font-family:var(--f-ui);font-size:0.75rem;letter-spacing:0.08em;padding:0.5rem 1.25rem;border-radius:8px;cursor:pointer;transition:all 0.8s ease-in-out;margin-top:0.5rem}
 .hero-signin-btn:hover{border-color:rgba(201,148,58,0.5);color:#C9943A;background:rgba(201,148,58,0.05)}
 .hero-user-info{display:flex;flex-direction:column;align-items:center;gap:0.4rem;margin-top:0.5rem}
